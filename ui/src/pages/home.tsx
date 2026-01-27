@@ -1,80 +1,173 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { HeadingField, CardLayout, RichTextDisplayField, ButtonWidget } from '@pglevy/sailwind'
+import { loadSeedDataIfEmpty } from '../data/seedData'
+
+/**
+ * Home Page
+ * 
+ * Main landing page with navigation to all sections of the application.
+ * Loads seed data on first visit if storage is empty.
+ * 
+ * **Validates: Requirements 1.3, 13.6**
+ */
 
 export default function Home() {
   const navigate = useNavigate()
+
+  // Load seed data on first visit if storage is empty
+  useEffect(() => {
+    loadSeedDataIfEmpty()
+  }, [])
 
   return (
     <div className="min-h-screen bg-blue-50">
       <div className="container mx-auto px-8 py-8">
         <HeadingField
-          text="Schema-First Starter"
+          text="UX Metrics"
           size="LARGE"
           headingTag="H1"
+          marginBelow="STANDARD"
+        />
+        <RichTextDisplayField
+          value={['Capture and analyze usability testing metrics for your studies.']}
           marginBelow="MORE"
         />
 
-        <CardLayout padding="MORE" showShadow={true}>
-          <HeadingField
-            text="Welcome"
-            size="MEDIUM"
-            headingTag="H2"
-            marginBelow="STANDARD"
-          />
-
-          <RichTextDisplayField
-            value={[
-              "This is a clean starter template for Schema-First prototyping.",
-              "",
-              "Build your prototype while AI maintains your API contract and concept model automatically.",
-              "Uses Sailwind components with Aurora color palette."
-            ]}
-            marginBelow="MORE"
-          />
-
-          <HeadingField
-            text="Getting Started"
-            size="MEDIUM"
-            headingTag="H3"
-            marginBelow="STANDARD"
-          />
-
-          <RichTextDisplayField
-            value={[
-              "1. Define your schema in schema/api-contract.yaml",
-              "2. Create pages for your domain",
-              "3. Generate types from your schema",
-              "4. Build your prototype using those types",
-              "",
-              "See examples/ticketing-system/ for a complete working example!"
-            ]}
-            marginBelow="MORE"
-          />
-
-          <ButtonWidget
-            label="View Example Form"
-            style="OUTLINE"
-            color="ACCENT"
-            onClick={() => navigate('/example-form')}
-          />
-        </CardLayout>
-
-        <div className="mt-6">
+        {/* Navigation Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Studies */}
           <CardLayout padding="MORE" showShadow={true}>
             <HeadingField
-              text="Next Steps"
+              text="Studies"
               size="MEDIUM"
-              headingTag="H3"
+              headingTag="H2"
               marginBelow="STANDARD"
             />
-
             <RichTextDisplayField
               value={[
-                "1. Explore examples/ticketing-system/ to see the workflow",
-                "2. Define your initial schema in schema/api-contract.yaml",
-                "3. Generate types from your schema",
-                "4. Create pages for your domain",
-                "5. Use /schema-evolution, /concept-sync, /contract-validator skills as you build"
+                'Create and manage usability studies.',
+                'Track sessions and assessments for each study.',
+              ]}
+              marginBelow="MORE"
+            />
+            <ButtonWidget
+              label="View Studies"
+              style="SOLID"
+              color="ACCENT"
+              onClick={() => navigate('/studies')}
+            />
+          </CardLayout>
+
+          {/* People */}
+          <CardLayout padding="MORE" showShadow={true}>
+            <HeadingField
+              text="People"
+              size="MEDIUM"
+              headingTag="H2"
+              marginBelow="STANDARD"
+            />
+            <RichTextDisplayField
+              value={[
+                'Manage participants, facilitators, and observers.',
+                'Assign people to sessions.',
+              ]}
+              marginBelow="MORE"
+            />
+            <ButtonWidget
+              label="View People"
+              style="SOLID"
+              color="ACCENT"
+              onClick={() => navigate('/people')}
+            />
+          </CardLayout>
+
+          {/* Metrics Dashboard */}
+          <CardLayout padding="MORE" showShadow={true}>
+            <HeadingField
+              text="Metrics"
+              size="MEDIUM"
+              headingTag="H2"
+              marginBelow="STANDARD"
+            />
+            <RichTextDisplayField
+              value={[
+                'View aggregated metrics and trends.',
+                'Filter by study, participant, or date range.',
+              ]}
+              marginBelow="MORE"
+            />
+            <ButtonWidget
+              label="View Metrics"
+              style="SOLID"
+              color="ACCENT"
+              onClick={() => navigate('/metrics')}
+            />
+          </CardLayout>
+
+          {/* Reports */}
+          <CardLayout padding="MORE" showShadow={true}>
+            <HeadingField
+              text="Reports"
+              size="MEDIUM"
+              headingTag="H2"
+              marginBelow="STANDARD"
+            />
+            <RichTextDisplayField
+              value={[
+                'Generate shareable reports with visualizations.',
+                'Export as JSON for further analysis.',
+              ]}
+              marginBelow="MORE"
+            />
+            <ButtonWidget
+              label="Generate Report"
+              style="SOLID"
+              color="ACCENT"
+              onClick={() => navigate('/reports')}
+            />
+          </CardLayout>
+
+          {/* Settings */}
+          <CardLayout padding="MORE" showShadow={true}>
+            <HeadingField
+              text="Settings"
+              size="MEDIUM"
+              headingTag="H2"
+              marginBelow="STANDARD"
+            />
+            <RichTextDisplayField
+              value={[
+                'Backup and restore your data.',
+                'Reset to demonstration data.',
+              ]}
+              marginBelow="MORE"
+            />
+            <ButtonWidget
+              label="Open Settings"
+              style="OUTLINE"
+              color="NEUTRAL"
+              onClick={() => navigate('/settings')}
+            />
+          </CardLayout>
+        </div>
+
+        {/* Quick Stats - could be enhanced later */}
+        <div className="mt-8">
+          <CardLayout padding="MORE" showShadow={true}>
+            <HeadingField
+              text="Getting Started"
+              size="MEDIUM"
+              headingTag="H2"
+              marginBelow="STANDARD"
+            />
+            <RichTextDisplayField
+              value={[
+                '1. Create a Study to organize your usability testing',
+                '2. Add People (participants, facilitators, observers)',
+                '3. Create Sessions within your study',
+                '4. Administer Assessments during each session',
+                '5. View Metrics and generate Reports',
               ]}
             />
           </CardLayout>

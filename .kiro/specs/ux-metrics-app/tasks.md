@@ -45,7 +45,7 @@ Implement data persistence layer using local storage.
   - Implement save confirmation and error handling
   - **Validates: Requirements 12.1, 12.2, 12.3**
 
-- [ ] 3.2 Implement data backup/restore
+- [x] 3.2 Implement data backup/restore
   - Create export function to download all data as JSON file
   - Create import function to restore from uploaded JSON file
   - **Validates: Requirements 12.4**
@@ -62,7 +62,7 @@ Implement the people management feature for participants, facilitators, and obse
   - Implement role filtering (participant, facilitator, observer)
   - **Validates: Requirements 2.5.1, 2.5.2, 2.5.3**
 
-- [ ] 4.2 Create PeopleList page
+- [x] 4.2 Create PeopleList page
   - Create `ui/src/pages/people.tsx` using Sailwind components (HeadingField, CardLayout, ButtonWidget)
   - Display name and role for each person
   - Include empty state message
@@ -281,18 +281,18 @@ Implement metric aggregation and analysis features.
 ## Task 12: Metrics Dashboard and Visualizations
 Create the dashboard with Recharts visualizations.
 
-- [ ] 12.1 Create MetricsDashboard page
+- [x] 12.1 Create MetricsDashboard page
   - Create `ui/src/pages/metrics.tsx`
   - Display aggregated metrics for a study using Sailwind CardLayout
   - Include empty state message
   - **Validates: Requirements 10.1, 10.2**
 
-- [ ] 12.2 Create metric chart components
+- [x] 12.2 Create metric chart components
   - Bar chart for success rate comparison using Recharts
   - Line chart for time on task trends using Recharts
   - **Validates: Requirements 11.4**
 
-- [ ] 12.3 Add filter controls to dashboard
+- [x] 12.3 Add filter controls to dashboard
   - Use Sailwind DropdownField for participant and task filters
   - Add date range inputs
   - **Validates: Requirements 10.3**
@@ -300,22 +300,22 @@ Create the dashboard with Recharts visualizations.
 ## Task 13: Report Generation
 Implement shareable report generation with JSON export.
 
-- [ ] 13.1 Implement ReportService
+- [x] 13.1 Implement ReportService
   - Create `ui/src/services/reportService.ts`
   - Generate report with aggregated metrics, participant count, session count
   - **Validates: Requirements 11.1, 11.2**
 
-- [ ] 13.2 Create ReportGenerator page
+- [x] 13.2 Create ReportGenerator page
   - Create `ui/src/pages/report.tsx`
   - Display report preview with Recharts visualizations
   - Use Sailwind CardLayout for report sections
   - **Validates: Requirements 11.1, 11.4**
 
-- [ ] 13.3 Implement JSON export
+- [x] 13.3 Implement JSON export
   - Add ButtonWidget to download report as JSON file
   - **Validates: Requirements 11.3**
 
-- [ ] 13.4 Add commentary feature
+- [x] 13.4 Add commentary feature
   - Use Sailwind TextField (multiline) for adding notes
   - Include notes in JSON export
   - **Validates: Requirements 11.5**
@@ -329,7 +329,7 @@ Implement shareable report generation with JSON export.
 ## Task 14: Seed Data
 Create demonstration seed data.
 
-- [ ] 14.1 Create seed data file
+- [x] 14.1 Create seed data file
   - Create `ui/src/data/seedData.ts`
   - Include 2+ studies with different products
   - Include 5+ sessions across studies
@@ -338,11 +338,11 @@ Create demonstration seed data.
   - Include varied metrics for aggregation demo
   - **Validates: Requirements 13.1, 13.2, 13.3, 13.4, 13.5**
 
-- [ ] 14.2 Implement seed data loading
+- [x] 14.2 Implement seed data loading
   - Load seed data on app initialization if storage is empty
   - **Validates: Requirements 13.6**
 
-- [ ] 14.3 Implement seed data reset
+- [x] 14.3 Implement seed data reset
   - Add ButtonWidget to clear all data and reload seed data
   - **Validates: Requirements 13.7**
 
@@ -354,17 +354,17 @@ Create demonstration seed data.
 ## Task 15: Navigation and App Shell
 Set up the main application navigation and routing.
 
-- [ ] 15.1 Update App.tsx with routing
+- [x] 15.1 Update App.tsx with routing
   - Add routes for all pages (studies, sessions, people, metrics, reports)
   - Use existing react-router-dom setup
   - **Validates: Requirements 1.3, 2.4**
 
-- [ ] 15.2 Create Home page with navigation
+- [x] 15.2 Create Home page with navigation
   - Update `ui/src/pages/home.tsx` with links to main sections
   - Use Sailwind CardLayout and ButtonWidget for navigation cards
   - **Validates: Requirements 1.3**
 
-- [ ] 15.3 Create Settings page
+- [x] 15.3 Create Settings page
   - Create `ui/src/pages/settings.tsx`
   - Include data backup/restore controls using Sailwind ButtonWidget
   - Include seed data reset button
@@ -373,12 +373,12 @@ Set up the main application navigation and routing.
 ## Task 16: Error Handling and Edge Cases
 Implement comprehensive error handling.
 
-- [ ] 16.1 Implement validation error handling
+- [x] 16.1 Implement validation error handling
   - Display clear error messages for invalid input
   - Highlight invalid fields
   - **Validates: Requirements 12.3**
 
-- [ ] 16.2 Implement division by zero handling
+- [x] 16.2 Implement division by zero handling
   - Return 0 or null for rates with zero denominator
   - **Validates: Requirements 4.2, 6.2, 7.2**
 
@@ -397,15 +397,15 @@ Complete integration testing and UI polish.
   - Ensure all 38 properties pass
   - **Validates: All correctness properties**
 
-- [ ] 17.2 Verify empty state messages
+- [x] 17.2 Verify empty state messages
   - Check all list views show appropriate empty states using Sailwind RichTextDisplayField
   - **Validates: Clarification - empty states**
 
-- [ ] 17.3 Update schema evolution log
+- [x] 17.3 Update schema evolution log
   - Document all schema changes in `schema/evolution-log.md`
   - **Validates: Schema-first approach**
 
-- [ ] 17.4 Build validation
+- [x] 17.4 Build validation
   - Run `npm run build` in `ui/` directory and fix any TypeScript errors
   - **Validates: All requirements**
 

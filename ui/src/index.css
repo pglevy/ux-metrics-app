@@ -118,3 +118,37 @@
     min-height: 100vh;
   }
 }
+
+
+/* Fix for Sailwind DropdownField being clipped by CardLayout overflow */
+@layer utilities {
+  /* Ensure dropdown containers allow overflow */
+  .dropdown-container {
+    position: relative;
+    z-index: 10;
+  }
+}
+
+/* Override CardLayout overflow to allow dropdowns to render properly */
+/* The Sailwind CardLayout may have overflow:hidden which clips dropdown options */
+[class*="CardLayout"] {
+  overflow: visible !important;
+}
+
+/* Fix Sailwind DropdownField dropdown panel overflow */
+/* The dropdown options panel needs to be visible, not clipped */
+[role="listbox"] {
+  overflow-y: auto !important;
+  overflow-x: visible !important;
+  max-height: 15rem !important; /* 240px - enough for several options */
+}
+
+/* Ensure the dropdown panel container doesn't clip */
+.absolute.z-50 {
+  overflow: visible !important;
+}
+
+/* Alternative: target by the specific classes seen in the dropdown */
+div[class*="overflow-h"] {
+  overflow: visible !important;
+}
