@@ -1,0 +1,196 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  HeadingField,
+  CardLayout,
+  ButtonWidget,
+  RichTextDisplayField,
+} from '@pglevy/sailwind'
+import type { Study } from '../../../api/types'
+import { getAllStudies, archiveStudy, unarchiveStudy } from '../services/studyService'
+
+/**
+ * Study List Page
+ *
+ * Displays all studies in the system with their name, product identifier,
+ * feature identifier (if present), and archived status.
+ * Allows navigation to add/edit study forms and study detail pages.
+ *
+ * **Validates: Requirements 1.3** - View list of all studies
+ */
+
+export default function StudyList() {
+  const navigate = useNavigate()
+  const [studies, setStudies] = useState<Study[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Load studies on component mount
+  useEffect(() => {
+    loadStudies()
+  }, [])
+
+  const loadStudies = () => {
+    setLoading(true)
+    try {
+      const allStudies = getAllStudies()
+      setStudies(allStudies)
+    } catch (error) {
+      console.error('Failed to load studies:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleArchive = (id: string) => {
+    const result = archiveStudy(id)
+    if (result.success) {
+      loadStudies()
+    } else {
+      console.error('Failed to archive study:', result.error)
+      alert(result.error || 'Failed to archive study')
+    }
+  }
+
+  const handleUnarchive = (id: string) => {
+    const result = unarchiveStudy(id)
+    if (result.success) {
+      loadStudies()
+    } else {
+      console.error('Failed to unarchive study:', result.error)
+      alert(result.error || 'Failed to unarchive study')
+    }
+  }
+
+  const getArchivedBadge = (archived: boolean) => {
+    if (archived) {
+      return (
+        <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-800">
+          Archived
+        </span>
+      )
+    }
+    return (
+      <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">
+        Active
+      </span>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-blue-50">
+      <div className="container mx-auto px-8 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <HeadingField
+            text="Studies"
+            size="LARGE"
+            headingTag="H1"
+            marginBelow="NONE"
+          />
+          <div className="flex gap-2">
+            <ButtonWidget
+              label="← Back to Home"
+              style="OUTLINE"
+              color="NEUTRAL"
+              onClick={() => navigate('/')}
+            />
+          </div>
+        </div>
+
+        {/* Add Study Button */}
+        <CardLayout padding="MORE" showShadow={true}>
+          <div className="flex items-center justify-between">
+            <HeadingField
+              text="Manage Studies"
+              size="MEDIUM"
+              headingTag="H2"
+              marginBelow="NONE"
+            />
+            <ButtonWidget
+              label="+ Add Study"
+              style="SOLID"
+              color="ACCENT"
+              onClick={() => navigate('/studies/new')}
+            />
+          </div>
+        </CardLayout>
+
+        {/* Studies List */}
+        <div className="mt-6 space-y-4">
+          {loading ? (
+            <CardLayout padding="MORE" showShadow={true}>
+              <RichTextDisplayField value={['Loading studies...']} />
+            </CardLayout>
+          ) : studies.length === 0 ? (
+            <CardLayout padding="MORE" showShadow={true}>
+              <RichTextDisplayField
+                value={[
+                  'No studies yet. Create your first study to start organizing usability evaluations.',
+                ]}
+              />
+            </CardLayout>
+          ) : (
+            studies.map((study) => (
+              <CardLayout key={study.id} padding="MORE" showShadow={true}>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <HeadingField
+                        text={study.name}
+                        size="MEDIUM"
+                        headingTag="H3"
+                        marginBelow="NONE"
+                      />
+                      {getArchivedBadge(study.archived)}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <strong>Product:</strong> {study.productId}
+                      {study.featureId && (
+                        <>
+                          {' | '}
+                          <strong>Feature:</strong> {study.featureId}
+                        </>
+                      )}
+                      {' | '}
+                      <strong>Created:</strong>{' '}
+                      {new Date(study.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <ButtonWidget
+                      label="View"
+                      style="SOLID"
+                      color="ACCENT"
+                      onClick={() => navigate(`/studies/${study.id}`)}
+                    />
+                    <ButtonWidget
+                      label="Edit"
+                      style="OUTLINE"
+                      color="NEUTRAL"
+                      onClick={() => navigate(`/studies/${study.id}/edit`)}
+                    />
+                    {study.archived ? (
+                      <ButtonWidget
+                        label="Unarchive"
+                        style="OUTLINE"
+                        color="NEUTRAL"
+                        onClick={() => handleUnarchive(study.id)}
+                      />
+                    ) : (
+                      <ButtonWidget
+                        label="Archive"
+                        style="OUTLINE"
+                        color="NEGATIVE"
+                        onClick={() => handleArchive(study.id)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </CardLayout>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
