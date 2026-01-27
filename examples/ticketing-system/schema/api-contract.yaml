@@ -1,0 +1,165 @@
+openapi: 3.1.0
+info:
+  title: Ticketing System API
+  version: 0.1.0
+  description: |
+    API contract for ticketing system prototype.
+
+    **Status: Prototype**
+    This schema evolves with UI prototypes. Changes are tracked in evolution-log.md.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /tickets:
+    get:
+      summary: List tickets
+      operationId: listTickets
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/TicketStatus'
+        - name: assignee
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ticket'
+
+    post:
+      summary: Create a ticket
+      operationId: createTicket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+      responses:
+        '201':
+          description: Ticket created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+
+  /tickets/{ticketId}:
+    get:
+      summary: Get ticket by ID
+      operationId: getTicket
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ticket details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+
+    patch:
+      summary: Update ticket
+      operationId: updateTicket
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicketRequest'
+      responses:
+        '200':
+          description: Ticket updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+
+components:
+  schemas:
+    Ticket:
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/TicketStatus'
+        assignee:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TicketStatus:
+      type: string
+      enum:
+        - open
+        - in_progress
+        - closed
+
+    CreateTicketRequest:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+        assignee:
+          type: string
+          nullable: true
+
+    UpdateTicketRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/TicketStatus'
+        assignee:
+          type: string
+          nullable: true

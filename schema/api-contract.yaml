@@ -1,0 +1,38 @@
+openapi: 3.1.0
+info:
+  title: Your API
+  version: 0.1.0
+  description: |
+    API contract for your application.
+
+    **Replace this with your domain.**
+
+    This is a placeholder schema. Define your entities, endpoints, and
+    operations here as you build your prototype.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  # TODO: Add your API endpoints here
+  # Example:
+  # /items:
+  #   get:
+  #     summary: List items
+  #     responses:
+  #       '200':
+  #         description: List of items
+
+components:
+  schemas:
+    # TODO: Add your data models here
+    # Example:
+    # Item:
+    #   type: object
+    #   required: [id, name]
+    #   properties:
+    #     id:
+    #       type: string
+    #     name:
+    #       type: string
