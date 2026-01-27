@@ -269,6 +269,85 @@ Fix all TypeScript errors before proceeding.
 
 ---
 
+## Optional Spec Analysis Tools
+
+Two additional steering files provide deeper specification analysis when working with formal spec workflows (e.g., Spec Kit):
+
+### #spec-clarify (Manual Inclusion)
+
+**Purpose:** Interactive clarification workflow to reduce ambiguity in specifications before planning.
+
+**When to Use:**
+- After creating initial spec, before technical planning
+- When spec has vague requirements or missing decisions
+- To ensure all stakeholders align on scope and behavior
+
+**How It Works:**
+1. Scans spec for ambiguities across 10+ categories (functional scope, data model, UX flow, non-functional requirements, edge cases, etc.)
+2. Asks up to 5 targeted clarification questions (multiple choice or short answer)
+3. Provides recommended answers based on best practices
+4. Integrates answers directly into spec with a `## Clarifications` section
+5. Updates relevant spec sections to resolve ambiguities
+
+**Invoke with:** `#spec-clarify` in your message when you have a spec that needs clarification
+
+**Example Flow:**
+```
+User: "I have a spec for a ticketing system. #spec-clarify"
+Agent: Analyzes spec, asks targeted questions like:
+  - "How should concurrent ticket edits be handled?"
+  - "What's the expected ticket volume per day?"
+  - Updates spec with clarified requirements
+```
+
+### #spec-analyze (Manual Inclusion)
+
+**Purpose:** Cross-artifact consistency analysis after tasks are generated.
+
+**When to Use:**
+- After spec, plan, and tasks are all created
+- Before starting implementation
+- To catch inconsistencies, gaps, or duplications
+
+**What It Checks:**
+- **Duplication:** Near-duplicate requirements
+- **Ambiguity:** Vague adjectives, unresolved placeholders
+- **Underspecification:** Missing measurable outcomes
+- **Coverage Gaps:** Requirements without tasks, tasks without requirements
+- **Inconsistency:** Terminology drift, conflicting requirements
+- **Constitution Alignment:** Violations of project principles (if `/memory/constitution.md` exists)
+
+**Output:** Read-only analysis report with severity ratings (CRITICAL/HIGH/MEDIUM/LOW) and remediation suggestions
+
+**Invoke with:** `#spec-analyze` in your message after all spec artifacts exist
+
+**Example Flow:**
+```
+User: "Validate my spec artifacts. #spec-analyze"
+Agent: Produces analysis report showing:
+  - 2 CRITICAL issues (requirements with no task coverage)
+  - 3 HIGH issues (ambiguous performance requirements)
+  - Coverage: 85% (17/20 requirements have tasks)
+  - Suggests specific fixes
+```
+
+### Integration with Spec Workflow
+
+These tools fit between standard spec phases:
+
+```
+1. Create Spec (spec.md)
+2. [OPTIONAL] Clarify Spec (#spec-clarify) ← Reduces ambiguity
+3. Create Plan (plan.md)
+4. Generate Tasks (tasks.md)
+5. [OPTIONAL] Analyze Artifacts (#spec-analyze) ← Validates consistency
+6. Implement
+```
+
+**Note:** These are manual-inclusion steering files. They only activate when you explicitly reference them with `#spec-clarify` or `#spec-analyze` in your message.
+
+---
+
 ## Success Criteria
 
 A well-maintained contract includes:
