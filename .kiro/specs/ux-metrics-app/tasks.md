@@ -3,17 +3,17 @@
 ## Task 1: Schema and Type Definitions
 Define the API contract and generate TypeScript types following the schema-first approach.
 
-- [ ] 1.1 Define OpenAPI schema for core entities
+- [x] 1.1 Define OpenAPI schema for core entities
   - Update `schema/api-contract.yaml` with Study, Session, Person, AssessmentType, AssessmentResponse schemas
   - Define all endpoints for CRUD operations
   - **Validates: Requirements 1.1, 2.1, 2.5.1, 3.1**
 
-- [ ] 1.2 Create TypeScript types from schema
+- [x] 1.2 Create TypeScript types from schema
   - Create `api/types/index.ts` with all entity interfaces
   - Include Study, Session, Person, AssessmentType, AssessmentResponse, Question types
   - **Validates: Requirements 1.1, 2.1, 2.5.1, 3.1**
 
-- [ ] 1.3 Update concept model documentation
+- [x] 1.3 Update concept model documentation
   - Update `concept-model/domain-model.md` with UX metrics entities
   - Update `concept-model/behavior-model.md` with session workflows
   - Update `concept-model/entity-relationship-diagram.md`
@@ -22,7 +22,7 @@ Define the API contract and generate TypeScript types following the schema-first
 ## Task 2: Project Dependencies and Test Setup
 Add required dependencies and configure testing infrastructure.
 
-- [ ] 2.1 Install additional dependencies
+- [x] 2.1 Install additional dependencies
   - Add recharts for chart visualizations
   - Run in `ui/` directory
   - **Validates: Requirements 11.4**

@@ -1,38 +1,1393 @@
 openapi: 3.1.0
 info:
-  title: Your API
+  title: UX Metrics Capture and Review API
   version: 0.1.0
   description: |
-    API contract for your application.
+    API contract for the UX Metrics Capture and Review Application.
 
-    **Replace this with your domain.**
+    **Status: Prototype**
+    This schema evolves with UI prototypes. Changes are tracked in evolution-log.md.
 
-    This is a placeholder schema. Define your entities, endpoints, and
-    operations here as you build your prototype.
+    The system supports capturing and analyzing usability metrics including:
+    - Task Success Rate
+    - Time on Task
+    - Task Efficiency
+    - Error Rate
+    - Single Ease Question (SEQ)
 
 servers:
   - url: http://localhost:3000/api
     description: Local development server
 
 paths:
-  # TODO: Add your API endpoints here
-  # Example:
-  # /items:
-  #   get:
-  #     summary: List items
-  #     responses:
-  #       '200':
-  #         description: List of items
+  # ============================================
+  # Study Endpoints
+  # ============================================
+  /studies:
+    get:
+      summary: List all studies
+      operationId: listStudies
+      parameters:
+        - name: archived
+          in: query
+          description: Filter by archived status
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: List of studies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Study'
 
+    post:
+      summary: Create a new study
+      operationId: createStudy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStudyRequest'
+      responses:
+        '201':
+          description: Study created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /studies/{studyId}:
+    get:
+      summary: Get study by ID
+      operationId: getStudy
+      parameters:
+        - name: studyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Study details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '404':
+          description: Study not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      summary: Update study
+      operationId: updateStudy
+      parameters:
+        - name: studyId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStudyRequest'
+      responses:
+        '200':
+          description: Study updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Study not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /studies/{studyId}/archive:
+    post:
+      summary: Archive a study
+      operationId: archiveStudy
+      parameters:
+        - name: studyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Study archived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '404':
+          description: Study not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============================================
+  # Session Endpoints
+  # ============================================
+  /sessions:
+    get:
+      summary: List all sessions
+      operationId: listSessions
+      parameters:
+        - name: studyId
+          in: query
+          description: Filter by study ID
+          schema:
+            type: string
+        - name: participantId
+          in: query
+          description: Filter by participant ID
+          schema:
+            type: string
+        - name: facilitatorId
+          in: query
+          description: Filter by facilitator ID
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: Filter sessions created on or after this date
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          description: Filter sessions created on or before this date
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          description: Filter by session status
+          schema:
+            $ref: '#/components/schemas/SessionStatus'
+      responses:
+        '200':
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Session'
+
+    post:
+      summary: Create a new session
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid input (missing required fields)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Referenced study not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /sessions/{sessionId}:
+    get:
+      summary: Get session by ID
+      operationId: getSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      summary: Update session
+      operationId: updateSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSessionRequest'
+      responses:
+        '200':
+          description: Session updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /sessions/{sessionId}/complete:
+    post:
+      summary: Mark session as complete
+      operationId: completeSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session marked as complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============================================
+  # Person Endpoints
+  # ============================================
+  /people:
+    get:
+      summary: List all people
+      operationId: listPeople
+      parameters:
+        - name: role
+          in: query
+          description: Filter by role
+          schema:
+            $ref: '#/components/schemas/PersonRole'
+      responses:
+        '200':
+          description: List of people
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+
+    post:
+      summary: Create a new person
+      operationId: createPerson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePersonRequest'
+      responses:
+        '201':
+          description: Person created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /people/{personId}:
+    get:
+      summary: Get person by ID
+      operationId: getPerson
+      parameters:
+        - name: personId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Person details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '404':
+          description: Person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      summary: Update person
+      operationId: updatePerson
+      parameters:
+        - name: personId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonRequest'
+      responses:
+        '200':
+          description: Person updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete person
+      operationId: deletePerson
+      parameters:
+        - name: personId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Person deleted
+        '404':
+          description: Person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Person is referenced by sessions and cannot be deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============================================
+  # Assessment Type Endpoints
+  # ============================================
+  /assessment-types:
+    get:
+      summary: List all assessment types
+      operationId: listAssessmentTypes
+      parameters:
+        - name: type
+          in: query
+          description: Filter by assessment type
+          schema:
+            $ref: '#/components/schemas/AssessmentTypeEnum'
+      responses:
+        '200':
+          description: List of assessment types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssessmentType'
+
+    post:
+      summary: Create a new assessment type
+      operationId: createAssessmentType
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssessmentTypeRequest'
+      responses:
+        '201':
+          description: Assessment type created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentType'
+        '400':
+          description: Invalid input (missing required fields)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /assessment-types/{assessmentTypeId}:
+    get:
+      summary: Get assessment type by ID
+      operationId: getAssessmentType
+      parameters:
+        - name: assessmentTypeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assessment type details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentType'
+        '404':
+          description: Assessment type not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      summary: Update assessment type
+      operationId: updateAssessmentType
+      parameters:
+        - name: assessmentTypeId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAssessmentTypeRequest'
+      responses:
+        '200':
+          description: Assessment type updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentType'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Assessment type not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============================================
+  # Assessment Response Endpoints
+  # ============================================
+  /assessment-responses:
+    get:
+      summary: List assessment responses
+      operationId: listAssessmentResponses
+      parameters:
+        - name: sessionId
+          in: query
+          description: Filter by session ID
+          schema:
+            type: string
+        - name: assessmentTypeId
+          in: query
+          description: Filter by assessment type ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of assessment responses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssessmentResponse'
+
+    post:
+      summary: Create a new assessment response
+      operationId: createAssessmentResponse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssessmentResponseRequest'
+      responses:
+        '201':
+          description: Assessment response created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Referenced session or assessment type not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Duplicate SEQ rating for same task/session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /assessment-responses/{responseId}:
+    get:
+      summary: Get assessment response by ID
+      operationId: getAssessmentResponse
+      parameters:
+        - name: responseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Assessment response details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentResponse'
+        '404':
+          description: Assessment response not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============================================
+  # Analytics Endpoints
+  # ============================================
+  /studies/{studyId}/metrics:
+    get:
+      summary: Get aggregated metrics for a study
+      operationId: getStudyMetrics
+      parameters:
+        - name: studyId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: Filter by start date
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          description: Filter by end date
+          schema:
+            type: string
+            format: date
+        - name: participantId
+          in: query
+          description: Filter by participant
+          schema:
+            type: string
+        - name: taskDescription
+          in: query
+          description: Filter by task description
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Aggregated metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregatedMetrics'
+        '404':
+          description: Study not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /reports:
+    post:
+      summary: Generate a report for a study
+      operationId: generateReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateReportRequest'
+      responses:
+        '200':
+          description: Generated report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '404':
+          description: Study not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # ============================================
+  # Data Management Endpoints
+  # ============================================
+  /data/export:
+    get:
+      summary: Export all data as JSON
+      operationId: exportData
+      responses:
+        '200':
+          description: All data exported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+
+  /data/import:
+    post:
+      summary: Import data from JSON
+      operationId: importData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataExport'
+      responses:
+        '200':
+          description: Data imported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid data format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /data/seed:
+    post:
+      summary: Load seed data
+      operationId: loadSeedData
+      responses:
+        '200':
+          description: Seed data loaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /data/reset:
+    post:
+      summary: Reset all data and reload seed data
+      operationId: resetData
+      responses:
+        '200':
+          description: Data reset and seed data loaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+# ============================================
+# Component Schemas
+# ============================================
 components:
   schemas:
-    # TODO: Add your data models here
-    # Example:
-    # Item:
-    #   type: object
-    #   required: [id, name]
-    #   properties:
-    #     id:
-    #       type: string
-    #     name:
-    #       type: string
+    # ----------------------------------------
+    # Study Schemas
+    # ----------------------------------------
+    Study:
+      type: object
+      required:
+        - id
+        - name
+        - productId
+        - createdAt
+        - updatedAt
+        - archived
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique study identifier
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Study name
+        productId:
+          type: string
+          minLength: 1
+          description: Product identifier
+        featureId:
+          type: string
+          nullable: true
+          description: Optional feature identifier
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+        archived:
+          type: boolean
+          default: false
+          description: Whether the study is archived
+
+    CreateStudyRequest:
+      type: object
+      required:
+        - name
+        - productId
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        productId:
+          type: string
+          minLength: 1
+        featureId:
+          type: string
+          nullable: true
+
+    UpdateStudyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        productId:
+          type: string
+          minLength: 1
+        featureId:
+          type: string
+          nullable: true
+
+    # ----------------------------------------
+    # Session Schemas
+    # ----------------------------------------
+    Session:
+      type: object
+      required:
+        - id
+        - studyId
+        - participantId
+        - facilitatorId
+        - observerIds
+        - createdAt
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique session identifier
+        studyId:
+          type: string
+          description: Reference to parent study
+        participantId:
+          type: string
+          description: Reference to participant person
+        facilitatorId:
+          type: string
+          description: Reference to facilitator person
+        observerIds:
+          type: array
+          items:
+            type: string
+          description: References to observer people
+        createdAt:
+          type: string
+          format: date-time
+          description: Session creation timestamp
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Session completion timestamp
+        status:
+          $ref: '#/components/schemas/SessionStatus'
+
+    SessionStatus:
+      type: string
+      enum:
+        - in_progress
+        - completed
+      description: Current status of the session
+
+    CreateSessionRequest:
+      type: object
+      required:
+        - studyId
+        - participantId
+        - facilitatorId
+      properties:
+        studyId:
+          type: string
+        participantId:
+          type: string
+        facilitatorId:
+          type: string
+        observerIds:
+          type: array
+          items:
+            type: string
+
+    UpdateSessionRequest:
+      type: object
+      properties:
+        participantId:
+          type: string
+        facilitatorId:
+          type: string
+        observerIds:
+          type: array
+          items:
+            type: string
+
+    # ----------------------------------------
+    # Person Schemas
+    # ----------------------------------------
+    Person:
+      type: object
+      required:
+        - id
+        - name
+        - role
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique person identifier
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Person's name
+        role:
+          $ref: '#/components/schemas/PersonRole'
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+
+    PersonRole:
+      type: string
+      enum:
+        - participant
+        - facilitator
+        - observer
+      description: Role of the person in sessions
+
+    CreatePersonRequest:
+      type: object
+      required:
+        - name
+        - role
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        role:
+          $ref: '#/components/schemas/PersonRole'
+
+    UpdatePersonRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        role:
+          $ref: '#/components/schemas/PersonRole'
+
+    # ----------------------------------------
+    # Assessment Type Schemas
+    # ----------------------------------------
+    AssessmentType:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - questions
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique assessment type identifier
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Assessment type name
+        type:
+          $ref: '#/components/schemas/AssessmentTypeEnum'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          minItems: 1
+          description: Questions for this assessment type
+
+    AssessmentTypeEnum:
+      type: string
+      enum:
+        - task_success_rate
+        - time_on_task
+        - task_efficiency
+        - error_rate
+        - seq
+      description: Type of assessment
+
+    Question:
+      type: object
+      required:
+        - id
+        - text
+        - responseType
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique question identifier
+        text:
+          type: string
+          minLength: 1
+          description: Question text
+        responseType:
+          $ref: '#/components/schemas/ResponseType'
+        validationRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationRule'
+          nullable: true
+          description: Optional validation rules for responses
+
+    ResponseType:
+      type: string
+      enum:
+        - boolean
+        - number
+        - text
+        - rating
+      description: Type of response expected
+
+    ValidationRule:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - min
+            - max
+            - minLength
+            - maxLength
+            - pattern
+            - required
+          description: Type of validation rule
+        value:
+          oneOf:
+            - type: number
+            - type: string
+          description: Value for the validation rule
+
+    CreateAssessmentTypeRequest:
+      type: object
+      required:
+        - name
+        - type
+        - questions
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        type:
+          $ref: '#/components/schemas/AssessmentTypeEnum'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateQuestionRequest'
+          minItems: 1
+
+    CreateQuestionRequest:
+      type: object
+      required:
+        - text
+        - responseType
+      properties:
+        text:
+          type: string
+          minLength: 1
+        responseType:
+          $ref: '#/components/schemas/ResponseType'
+        validationRules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationRule'
+          nullable: true
+
+    UpdateAssessmentTypeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          minItems: 1
+
+    # ----------------------------------------
+    # Assessment Response Schemas
+    # ----------------------------------------
+    AssessmentResponse:
+      type: object
+      required:
+        - id
+        - sessionId
+        - assessmentTypeId
+        - taskDescription
+        - responses
+        - calculatedMetrics
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique response identifier
+        sessionId:
+          type: string
+          description: Reference to parent session
+        assessmentTypeId:
+          type: string
+          description: Reference to assessment type
+        taskDescription:
+          type: string
+          minLength: 1
+          description: Description of the task being assessed
+        responses:
+          type: object
+          additionalProperties: true
+          description: Response data keyed by question ID
+        calculatedMetrics:
+          type: object
+          additionalProperties:
+            type: number
+          description: Calculated metrics from responses
+        createdAt:
+          type: string
+          format: date-time
+          description: Response creation timestamp
+
+    CreateAssessmentResponseRequest:
+      type: object
+      required:
+        - sessionId
+        - assessmentTypeId
+        - taskDescription
+        - responses
+      properties:
+        sessionId:
+          type: string
+        assessmentTypeId:
+          type: string
+        taskDescription:
+          type: string
+          minLength: 1
+        responses:
+          type: object
+          additionalProperties: true
+          description: Response data keyed by question ID
+
+    # ----------------------------------------
+    # Analytics Schemas
+    # ----------------------------------------
+    AggregatedMetrics:
+      type: object
+      required:
+        - studyId
+        - sessionCount
+        - participantCount
+        - dateRange
+        - metrics
+      properties:
+        studyId:
+          type: string
+          description: Study identifier
+        sessionCount:
+          type: integer
+          minimum: 0
+          description: Number of sessions included
+        participantCount:
+          type: integer
+          minimum: 0
+          description: Number of unique participants
+        dateRange:
+          type: object
+          required:
+            - start
+            - end
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+        metrics:
+          $ref: '#/components/schemas/MetricsSummary'
+
+    MetricsSummary:
+      type: object
+      properties:
+        taskSuccessRate:
+          $ref: '#/components/schemas/MetricAggregate'
+        timeOnTask:
+          $ref: '#/components/schemas/TimeMetricAggregate'
+        taskEfficiency:
+          $ref: '#/components/schemas/MetricAggregate'
+        errorRate:
+          $ref: '#/components/schemas/MetricAggregate'
+        seq:
+          $ref: '#/components/schemas/MetricAggregate'
+
+    MetricAggregate:
+      type: object
+      properties:
+        mean:
+          type: number
+          nullable: true
+          description: Mean value
+        count:
+          type: integer
+          minimum: 0
+          description: Number of data points
+
+    TimeMetricAggregate:
+      type: object
+      properties:
+        median:
+          type: number
+          nullable: true
+          description: Median value in seconds
+        mean:
+          type: number
+          nullable: true
+          description: Mean value in seconds
+        count:
+          type: integer
+          minimum: 0
+          description: Number of data points
+
+    # ----------------------------------------
+    # Report Schemas
+    # ----------------------------------------
+    Report:
+      type: object
+      required:
+        - id
+        - studyId
+        - generatedAt
+        - metrics
+        - sessionCount
+        - participantCount
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique report identifier
+        studyId:
+          type: string
+          description: Study identifier
+        studyName:
+          type: string
+          description: Study name for display
+        generatedAt:
+          type: string
+          format: date-time
+          description: Report generation timestamp
+        metrics:
+          $ref: '#/components/schemas/MetricsSummary'
+        sessionCount:
+          type: integer
+          minimum: 0
+          description: Number of sessions in report
+        participantCount:
+          type: integer
+          minimum: 0
+          description: Number of unique participants
+        commentary:
+          type: string
+          nullable: true
+          description: Optional notes or commentary
+
+    GenerateReportRequest:
+      type: object
+      required:
+        - studyId
+      properties:
+        studyId:
+          type: string
+        commentary:
+          type: string
+          nullable: true
+          description: Optional notes to include in report
+
+    # ----------------------------------------
+    # Data Management Schemas
+    # ----------------------------------------
+    DataExport:
+      type: object
+      required:
+        - exportedAt
+        - version
+      properties:
+        exportedAt:
+          type: string
+          format: date-time
+          description: Export timestamp
+        version:
+          type: string
+          description: Schema version
+        studies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Study'
+        sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+        assessmentTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentType'
+        assessmentResponses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentResponse'
+
+    # ----------------------------------------
+    # Error Schema
+    # ----------------------------------------
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Additional error details
