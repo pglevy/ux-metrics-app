@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UX Metrics - Design Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="4" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+          <rect x="18" y="4" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="4" y="18" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="18" y="18" width="10" height="10" rx="2" fill="currentColor"/>
+        </svg>
+        <span class="logo-text">UX Metrics</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="#" class="nav-item active">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M3 7L10 3L17 7V17H3V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="#studies" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="4" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span>Studies</span>
+      </a>
+      <a href="#people" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 17C4 13.5 6.5 12 10 12C13.5 12 16 13.5 16 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>People</span>
+      </a>
+      <a href="#metrics" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M3 14L7 10L11 13L17 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="3" cy="14" r="1.5" fill="currentColor"/>
+          <circle cx="7" cy="10" r="1.5" fill="currentColor"/>
+          <circle cx="11" cy="13" r="1.5" fill="currentColor"/>
+          <circle cx="17" cy="7" r="1.5" fill="currentColor"/>
+        </svg>
+        <span>Metrics</span>
+      </a>
+      <a href="#reports" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="4" y="3" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="7" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="7" y1="10" x2="13" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="7" y1="13" x2="10" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Reports</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="#settings" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.5 4.5L14 6M6 14L4.5 15.5M15.5 15.5L14 14M6 6L4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div>
+          <h1 class="page-title">Welcome back</h1>
+          <p class="page-subtitle">Track and analyze usability testing metrics for your research studies</p>
+        </div>
+        <button class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          New Study
+        </button>
+      </div>
+    </header>
+
+    <!-- Quick Stats -->
+    <section class="stats-grid">
+      <div class="stat-card stat-card-blue">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+            <line x1="4" y1="10" x2="20" y2="10" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Active Studies</div>
+          <div class="stat-value">12</div>
+          <div class="stat-change positive">+3 this month</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-green">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M4 18L9 13L13 16L20 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="4" cy="18" r="2" fill="currentColor"/>
+            <circle cx="9" cy="13" r="2" fill="currentColor"/>
+            <circle cx="13" cy="16" r="2" fill="currentColor"/>
+            <circle cx="20" cy="9" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Sessions Completed</div>
+          <div class="stat-value">143</div>
+          <div class="stat-change positive">+24 this week</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-purple">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M4 21C4 16.5 7.5 15 12 15C16.5 15 20 16.5 20 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Participants</div>
+          <div class="stat-value">87</div>
+          <div class="stat-change neutral">Total enrolled</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-orange">
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
+            <line x1="9" y1="9" x2="15" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="9" y1="13" x2="15" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="9" y1="17" x2="12" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Reports Generated</div>
+          <div class="stat-value">28</div>
+          <div class="stat-change neutral">All time</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Activity & Quick Actions -->
+    <div class="content-grid">
+      <section class="content-card">
+        <div class="card-header">
+          <h2 class="card-title">Recent Studies</h2>
+          <a href="#" class="link-secondary">View all →</a>
+        </div>
+        <div class="study-list">
+          <div class="study-item">
+            <div class="study-info">
+              <h3 class="study-name">Mobile App Checkout Flow</h3>
+              <div class="study-meta">
+                <span class="meta-item">E-commerce Platform</span>
+                <span class="meta-divider">•</span>
+                <span class="meta-item">18 sessions</span>
+                <span class="meta-divider">•</span>
+                <span class="badge badge-active">Active</span>
+              </div>
+            </div>
+            <div class="study-metrics">
+              <div class="mini-metric">
+                <div class="mini-metric-value">87%</div>
+                <div class="mini-metric-label">Success Rate</div>
+              </div>
+              <div class="mini-metric">
+                <div class="mini-metric-value">4.2s</div>
+                <div class="mini-metric-label">Avg Time</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="study-item">
+            <div class="study-info">
+              <h3 class="study-name">Dashboard Navigation Study</h3>
+              <div class="study-meta">
+                <span class="meta-item">Analytics Dashboard</span>
+                <span class="meta-divider">•</span>
+                <span class="meta-item">24 sessions</span>
+                <span class="meta-divider">•</span>
+                <span class="badge badge-active">Active</span>
+              </div>
+            </div>
+            <div class="study-metrics">
+              <div class="mini-metric">
+                <div class="mini-metric-value">92%</div>
+                <div class="mini-metric-label">Success Rate</div>
+              </div>
+              <div class="mini-metric">
+                <div class="mini-metric-value">3.8s</div>
+                <div class="mini-metric-label">Avg Time</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="study-item">
+            <div class="study-info">
+              <h3 class="study-name">Onboarding Flow V2</h3>
+              <div class="study-meta">
+                <span class="meta-item">User Registration</span>
+                <span class="meta-divider">•</span>
+                <span class="meta-item">12 sessions</span>
+                <span class="meta-divider">•</span>
+                <span class="badge badge-completed">Completed</span>
+              </div>
+            </div>
+            <div class="study-metrics">
+              <div class="mini-metric">
+                <div class="mini-metric-value">78%</div>
+                <div class="mini-metric-label">Success Rate</div>
+              </div>
+              <div class="mini-metric">
+                <div class="mini-metric-value">6.1s</div>
+                <div class="mini-metric-label">Avg Time</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-card">
+        <div class="card-header">
+          <h2 class="card-title">Quick Actions</h2>
+        </div>
+        <div class="action-list">
+          <a href="#" class="action-item">
+            <div class="action-icon action-icon-blue">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="action-content">
+              <div class="action-title">Create New Study</div>
+              <div class="action-description">Set up a new usability testing study</div>
+            </div>
+            <svg class="action-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <a href="#" class="action-item">
+            <div class="action-icon action-icon-green">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M4 17C4 14 6.5 13 10 13C13.5 13 16 14 16 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="action-content">
+              <div class="action-title">Add Participant</div>
+              <div class="action-description">Register a new participant for testing</div>
+            </div>
+            <svg class="action-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <a href="#" class="action-item">
+            <div class="action-icon action-icon-purple">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="4" y="3" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                <line x1="7" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="7" y1="10" x2="13" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="action-content">
+              <div class="action-title">Generate Report</div>
+              <div class="action-description">Create a summary report with visualizations</div>
+            </div>
+            <svg class="action-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          <a href="#" class="action-item">
+            <div class="action-icon action-icon-orange">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M3 14L7 10L11 13L17 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="3" cy="14" r="1.5" fill="currentColor"/>
+                <circle cx="7" cy="10" r="1.5" fill="currentColor"/>
+                <circle cx="11" cy="13" r="1.5" fill="currentColor"/>
+                <circle cx="17" cy="7" r="1.5" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="action-content">
+              <div class="action-title">View Metrics Dashboard</div>
+              <div class="action-description">Explore aggregated metrics and trends</div>
+            </div>
+            <svg class="action-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Getting Started Guide -->
+    <section class="content-card guide-card">
+      <div class="guide-header">
+        <div>
+          <h2 class="card-title">Getting Started</h2>
+          <p class="guide-description">Follow these steps to begin tracking usability metrics</p>
+        </div>
+      </div>
+      <div class="guide-steps">
+        <div class="guide-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Create a Study</h3>
+            <p class="step-description">Define your research goals and set up a new usability study</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="guide-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Add People</h3>
+            <p class="step-description">Register participants, facilitators, and observers</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="guide-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Create Sessions</h3>
+            <p class="step-description">Schedule and conduct testing sessions with participants</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="guide-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 class="step-title">Administer Assessments</h3>
+            <p class="step-description">Capture metrics using various assessment types</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="guide-step">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3 class="step-title">Analyze & Report</h3>
+            <p class="step-description">View aggregated metrics and generate shareable reports</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metrics Dashboard - UX Metrics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="metrics-styles.css">
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="4" width="10" height="10" rx="2" fill="currentColor" opacity="0.3"/>
+          <rect x="18" y="4" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="4" y="18" width="10" height="10" rx="2" fill="currentColor" opacity="0.6"/>
+          <rect x="18" y="18" width="10" height="10" rx="2" fill="currentColor"/>
+        </svg>
+        <span class="logo-text">UX Metrics</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="index.html" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M3 7L10 3L17 7V17H3V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="#studies" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="4" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span>Studies</span>
+      </a>
+      <a href="#people" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 17C4 13.5 6.5 12 10 12C13.5 12 16 13.5 16 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>People</span>
+      </a>
+      <a href="metrics.html" class="nav-item active">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M3 14L7 10L11 13L17 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="3" cy="14" r="1.5" fill="currentColor"/>
+          <circle cx="7" cy="10" r="1.5" fill="currentColor"/>
+          <circle cx="11" cy="13" r="1.5" fill="currentColor"/>
+          <circle cx="17" cy="7" r="1.5" fill="currentColor"/>
+        </svg>
+        <span>Metrics</span>
+      </a>
+      <a href="#reports" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="4" y="3" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="7" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="7" y1="10" x2="13" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="7" y1="13" x2="10" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Reports</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="#settings" class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.5 4.5L14 6M6 14L4.5 15.5M15.5 15.5L14 14M6 6L4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Settings</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div>
+          <h1 class="page-title">Metrics Dashboard</h1>
+          <p class="page-subtitle">Mobile App Checkout Flow • E-commerce Platform</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 8H14M8 2V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Export Data
+          </button>
+          <button class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="6" y1="6" x2="10" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="6" y1="9" x2="10" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Generate Report
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters -->
+    <section class="filters-bar">
+      <div class="filter-group">
+        <label class="filter-label">Date Range</label>
+        <select class="filter-select">
+          <option>Last 7 days</option>
+          <option>Last 30 days</option>
+          <option>Last 90 days</option>
+          <option>Custom range</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Participant</label>
+        <select class="filter-select">
+          <option>All participants</option>
+          <option>John Doe</option>
+          <option>Jane Smith</option>
+          <option>Bob Johnson</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Task</label>
+        <select class="filter-select">
+          <option>All tasks</option>
+          <option>Add item to cart</option>
+          <option>Apply promo code</option>
+          <option>Complete checkout</option>
+        </select>
+      </div>
+      <button class="btn-filter-clear">Clear filters</button>
+    </section>
+
+    <!-- Primary Metrics -->
+    <section class="metrics-grid-primary">
+      <div class="metric-card metric-card-large metric-card-success">
+        <div class="metric-header">
+          <div class="metric-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="metric-badge metric-badge-trend-up">+5.2%</div>
+        </div>
+        <div class="metric-label">Task Success Rate</div>
+        <div class="metric-value">87.3<span class="metric-unit">%</span></div>
+        <div class="metric-subtitle">Mean across 18 sessions</div>
+        <div class="metric-sparkline">
+          <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              points="0,25 20,22 40,18 60,15 80,12 100,8"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div class="metric-card metric-card-large metric-card-primary">
+        <div class="metric-header">
+          <div class="metric-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="metric-badge metric-badge-trend-down">-0.3s</div>
+        </div>
+        <div class="metric-label">Time on Task (Median)</div>
+        <div class="metric-value">4.2<span class="metric-unit">s</span></div>
+        <div class="metric-subtitle">Median across 18 sessions</div>
+        <div class="metric-sparkline">
+          <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+            <polyline
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              points="0,8 20,12 40,10 60,8 80,6 100,5"
+            />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Secondary Metrics -->
+    <section class="metrics-grid-secondary">
+      <div class="metric-card metric-card-warning">
+        <div class="metric-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2L3 17H17L10 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <line x1="10" y1="8" x2="10" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="10" cy="14.5" r="0.75" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <div class="metric-label">Error Rate</div>
+          <div class="metric-value-small">2.4<span class="metric-unit">%</span></div>
+          <div class="metric-subtitle">Mean across 12 sessions</div>
+        </div>
+      </div>
+
+      <div class="metric-card metric-card-info">
+        <div class="metric-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 8L7 4L11 7L17 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="3" cy="8" r="1.5" fill="currentColor"/>
+            <circle cx="7" cy="4" r="1.5" fill="currentColor"/>
+            <circle cx="11" cy="7" r="1.5" fill="currentColor"/>
+            <circle cx="17" cy="2" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <div class="metric-label">Task Efficiency</div>
+          <div class="metric-value-small">0.94</div>
+          <div class="metric-subtitle">Mean across 15 sessions</div>
+        </div>
+      </div>
+
+      <div class="metric-card metric-card-purple">
+        <div class="metric-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2C10 2 6 5 6 10C6 13 8 15 10 15C12 15 14 13 14 10C14 5 10 2 10 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M10 18V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <div class="metric-label">SEQ Score</div>
+          <div class="metric-value-small">5.8<span class="metric-unit">/7</span></div>
+          <div class="metric-subtitle">Mean across 18 sessions</div>
+        </div>
+      </div>
+
+      <div class="metric-card metric-card-neutral">
+        <div class="metric-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 17C4 14 6.5 13 10 13C13.5 13 16 14 16 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <div class="metric-label">Participants</div>
+          <div class="metric-value-small">18</div>
+          <div class="metric-subtitle">Total in study</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts Section -->
+    <div class="charts-grid">
+      <section class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h2 class="chart-title">Success Rate by Task</h2>
+            <p class="chart-subtitle">Comparison across different task types</p>
+          </div>
+          <button class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="2" r="1.5" fill="currentColor"/>
+              <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+              <circle cx="8" cy="14" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="chart-content">
+          <!-- Bar Chart Visualization -->
+          <div class="bar-chart">
+            <div class="bar-group">
+              <div class="bar-label">Add to cart</div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill-success" style="width: 94%">
+                  <span class="bar-value">94%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label">Apply promo</div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill-success" style="width: 87%">
+                  <span class="bar-value">87%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label">Enter shipping</div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill-success" style="width: 89%">
+                  <span class="bar-value">89%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label">Enter payment</div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill-warning" style="width: 78%">
+                  <span class="bar-value">78%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-label">Complete order</div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill-success" style="width: 91%">
+                  <span class="bar-value">91%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h2 class="chart-title">Time on Task Trends</h2>
+            <p class="chart-subtitle">Performance over time</p>
+          </div>
+          <button class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="2" r="1.5" fill="currentColor"/>
+              <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+              <circle cx="8" cy="14" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="chart-content">
+          <!-- Line Chart Visualization -->
+          <div class="line-chart">
+            <svg viewBox="0 0 400 200" preserveAspectRatio="none">
+              <!-- Grid lines -->
+              <line x1="0" y1="160" x2="400" y2="160" stroke="#E5E5E5" stroke-width="1"/>
+              <line x1="0" y1="120" x2="400" y2="120" stroke="#E5E5E5" stroke-width="1"/>
+              <line x1="0" y1="80" x2="400" y2="80" stroke="#E5E5E5" stroke-width="1"/>
+              <line x1="0" y1="40" x2="400" y2="40" stroke="#E5E5E5" stroke-width="1"/>
+
+              <!-- Data line -->
+              <polyline
+                fill="none"
+                stroke="#3F8EEE"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                points="0,140 50,130 100,125 150,110 200,100 250,95 300,90 350,85 400,80"
+              />
+
+              <!-- Data points -->
+              <circle cx="0" cy="140" r="4" fill="#3F8EEE"/>
+              <circle cx="50" cy="130" r="4" fill="#3F8EEE"/>
+              <circle cx="100" cy="125" r="4" fill="#3F8EEE"/>
+              <circle cx="150" cy="110" r="4" fill="#3F8EEE"/>
+              <circle cx="200" cy="100" r="4" fill="#3F8EEE"/>
+              <circle cx="250" cy="95" r="4" fill="#3F8EEE"/>
+              <circle cx="300" cy="90" r="4" fill="#3F8EEE"/>
+              <circle cx="350" cy="85" r="4" fill="#3F8EEE"/>
+              <circle cx="400" cy="80" r="4" fill="#3F8EEE"/>
+            </svg>
+            <div class="chart-labels">
+              <span>Session 1</span>
+              <span>Session 5</span>
+              <span>Session 10</span>
+              <span>Session 15</span>
+              <span>Session 18</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Data Table -->
+    <section class="data-table-card">
+      <div class="table-header">
+        <div>
+          <h2 class="table-title">Session Details</h2>
+          <p class="table-subtitle">Individual session results</p>
+        </div>
+        <div class="table-actions">
+          <button class="btn-secondary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M6 2L10 6L6 10M4 2L0 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Filter
+          </button>
+          <button class="btn-secondary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M1 4H13M1 7H13M1 10H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Sort
+          </button>
+        </div>
+      </div>
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Session</th>
+              <th>Participant</th>
+              <th>Date</th>
+              <th>Task</th>
+              <th>Success Rate</th>
+              <th>Time (s)</th>
+              <th>SEQ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="table-id">#S-018</span></td>
+              <td>Sarah Johnson</td>
+              <td>Jan 27, 2026</td>
+              <td>Complete checkout</td>
+              <td><span class="badge-table badge-success">92%</span></td>
+              <td>3.8s</td>
+              <td>6.2</td>
+            </tr>
+            <tr>
+              <td><span class="table-id">#S-017</span></td>
+              <td>Michael Chen</td>
+              <td>Jan 26, 2026</td>
+              <td>Apply promo code</td>
+              <td><span class="badge-table badge-success">95%</span></td>
+              <td>4.1s</td>
+              <td>6.5</td>
+            </tr>
+            <tr>
+              <td><span class="table-id">#S-016</span></td>
+              <td>Emma Davis</td>
+              <td>Jan 26, 2026</td>
+              <td>Enter payment</td>
+              <td><span class="badge-table badge-warning">78%</span></td>
+              <td>5.3s</td>
+              <td>4.8</td>
+            </tr>
+            <tr>
+              <td><span class="table-id">#S-015</span></td>
+              <td>James Wilson</td>
+              <td>Jan 25, 2026</td>
+              <td>Add to cart</td>
+              <td><span class="badge-table badge-success">98%</span></td>
+              <td>2.9s</td>
+              <td>6.8</td>
+            </tr>
+            <tr>
+              <td><span class="table-id">#S-014</span></td>
+              <td>Olivia Brown</td>
+              <td>Jan 25, 2026</td>
+              <td>Complete checkout</td>
+              <td><span class="badge-table badge-success">89%</span></td>
+              <td>4.5s</td>
+              <td>5.9</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
