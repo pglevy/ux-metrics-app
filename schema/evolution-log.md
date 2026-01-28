@@ -42,7 +42,7 @@ See [examples/ticketing-system/schema/evolution-log.md](../../examples/ticketing
 
 ---
 
-## 2025-01-27 - Initial Schema Definition for UX Metrics App
+## 2026-01-27 - Initial Schema Definition for UX Metrics App
 
 **Trigger**: Task 1.1 - Define OpenAPI schema for core entities
 
@@ -118,3 +118,24 @@ See [examples/ticketing-system/schema/evolution-log.md](../../examples/ticketing
 - [x] concept-model - Updated with all entities and workflows
 - [x] types - Generated and aligned with schema
 - [x] UI prototype - Fully functional
+
+
+---
+
+## 2026-01-27 - Add scheduledAt to CreateSessionRequest
+
+**Trigger**: Contract validation found prototype using `scheduledAt` parameter not defined in schema
+
+**Changes**:
+- Added `scheduledAt` optional field to `CreateSessionRequest` schema
+- Field is date-time format, nullable
+- Allows sessions to be scheduled for a specific date/time
+- Fixed evolution log date typo (2025 → 2026)
+
+**Rationale**: The `sessionService.ts` accepts a `scheduledAt` parameter to allow scheduling sessions in advance. This aligns the schema with the existing prototype implementation.
+
+**Impact**:
+- [x] api-contract.yaml updated
+- [ ] concept-model updated (minor - session scheduling)
+- [x] types regenerated
+- [ ] mock API updated

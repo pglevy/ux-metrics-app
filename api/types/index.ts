@@ -71,6 +71,7 @@ export interface CreateSessionRequest {
   participantId: string;
   facilitatorId: string;
   observerIds?: string[];
+  scheduledAt?: string | null;
 }
 
 export interface UpdateSessionRequest {

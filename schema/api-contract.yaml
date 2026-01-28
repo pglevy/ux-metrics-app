@@ -925,6 +925,11 @@ components:
           type: array
           items:
             type: string
+        scheduledAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Optional scheduled date/time for the session (overrides createdAt if provided)
 
     UpdateSessionRequest:
       type: object
