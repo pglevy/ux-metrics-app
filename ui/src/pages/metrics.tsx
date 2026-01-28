@@ -14,6 +14,7 @@ import { getByRole } from '../services/personService'
 import { getStudyMetrics, formatMetricsForDisplay, getUniqueTaskDescriptions, type AnalyticsFilters } from '../services/analyticsService'
 import SuccessRateChart from '../components/charts/SuccessRateChart'
 import TimeOnTaskChart from '../components/charts/TimeOnTaskChart'
+import MetricCard from '../components/MetricCard'
 
 /**
  * Metrics Dashboard Page
@@ -145,7 +146,7 @@ export default function MetricsDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-blue-50">
+      <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="container mx-auto px-8 py-8">
           <CardLayout padding="MORE" showShadow={true}>
             <RichTextDisplayField value={['Loading...']} />
@@ -156,31 +157,32 @@ export default function MetricsDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <div className="container mx-auto px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <HeadingField
-            text="Metrics Dashboard"
-            size="LARGE"
-            headingTag="H1"
-            marginBelow="NONE"
-          />
-          <div className="flex gap-2">
-            <ButtonWidget
-              label="Generate Report"
-              style="SOLID"
-              color="ACCENT"
-              onClick={() => navigate(`/reports${selectedStudyId ? `?studyId=${selectedStudyId}` : ''}`)}
-            />
-            <ButtonWidget
-              label="← Back to Home"
-              style="OUTLINE"
-              color="NEUTRAL"
-              onClick={() => navigate('/')}
-            />
+        <header className="mb-8" style={{ animation: 'fadeInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold mb-2" style={{
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.03em'
+              }}>
+                Metrics Dashboard
+              </h1>
+              <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
+                Analyze aggregated usability testing metrics and trends
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <ButtonWidget
+                label="Generate Report"
+                style="SOLID"
+                color="ACCENT"
+                onClick={() => navigate(`/reports${selectedStudyId ? `?studyId=${selectedStudyId}` : ''}`)}
+              />
+            </div>
           </div>
-        </div>
+        </header>
 
         {/* Study Selector */}
         <CardLayout padding="MORE" showShadow={true}>
@@ -288,115 +290,66 @@ export default function MetricsDashboard() {
               </CardLayout>
             ) : (
               <>
-                {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  {/* Session & Participant Count */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Overview"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Sessions:</span>
-                        <span className="font-semibold">{metrics.sessionCount}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Participants:</span>
-                        <span className="font-semibold">{metrics.participantCount}</span>
-                      </div>
-                      {metrics.dateRange.start && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Date Range:</span>
-                          <span className="font-semibold text-sm">
-                            {new Date(metrics.dateRange.start).toLocaleDateString()} - {new Date(metrics.dateRange.end).toLocaleDateString()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </CardLayout>
+                {/* Primary Metrics */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+                  <MetricCard
+                    label="Task Success Rate"
+                    value={formattedMetrics?.taskSuccessRate || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.taskSuccessRate?.count || 0} sessions`}
+                    icon={
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    }
+                    variant="success"
+                    size="large"
+                  />
 
-                  {/* Task Success Rate */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Task Success Rate"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-green-600">
-                      {formattedMetrics?.taskSuccessRate}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.taskSuccessRate?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Time on Task (Median)"
+                    value={formattedMetrics?.timeOnTask || 'N/A'}
+                    subtitle={`Median across ${metrics.metrics.timeOnTask?.count || 0} sessions`}
+                    icon={
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    }
+                    variant="primary"
+                    size="large"
+                  />
+                </div>
 
-                  {/* Time on Task */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Time on Task (Median)"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-blue-600">
-                      {formattedMetrics?.timeOnTask}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.timeOnTask?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                {/* Secondary Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
 
-                  {/* Task Efficiency */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Task Efficiency"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-purple-600">
-                      {formattedMetrics?.taskEfficiency}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.taskEfficiency?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Sessions"
+                    value={metrics.sessionCount}
+                    subtitle={`${metrics.participantCount} participants`}
+                    variant="neutral"
+                  />
 
-                  {/* Error Rate */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Error Rate"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-red-600">
-                      {formattedMetrics?.errorRate}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.errorRate?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Task Efficiency"
+                    value={formattedMetrics?.taskEfficiency || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.taskEfficiency?.count || 0} sessions`}
+                    variant="info"
+                  />
 
-                  {/* SEQ Score */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="SEQ Score"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-orange-600">
-                      {formattedMetrics?.seq}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.seq?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Error Rate"
+                    value={formattedMetrics?.errorRate || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.errorRate?.count || 0} sessions`}
+                    variant="warning"
+                  />
+
+                  <MetricCard
+                    label="SEQ Score"
+                    value={formattedMetrics?.seq || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.seq?.count || 0} sessions`}
+                    variant="purple"
+                  />
                 </div>
 
                 {/* Charts */}

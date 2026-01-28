@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @source "../node_modules/@pglevy/sailwind/dist";
@@ -13,6 +13,9 @@
 
   /* Custom border radius (overrides Tailwind default of 0.125rem/2px) */
   --radius-sm: 0.25rem;      /* 4px - SAIL SEMI_ROUNDED */
+  --radius-md: 0.5rem;       /* 8px */
+  --radius-lg: 0.75rem;      /* 12px */
+  --radius-xl: 1rem;         /* 16px */
 
   /* Aurora Color Palette - mapped to consistent Tailwind steps (50, 100, 200, 500, 700, 900) */
 
@@ -101,10 +104,10 @@
 
 @layer base {
   html {
-    font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     font-weight: 400;
-    color: #222222;
-    background-color: #FFFFFF;
+    color: #171717;
+    background-color: #FAFAFA;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -116,6 +119,97 @@
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
+  }
+}
+
+/* ============================================
+   Design System - Custom Properties
+   ============================================ */
+
+:root {
+  /* Neutral Palette - for backgrounds and text */
+  --bg-primary: #FAFAFA;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F5F5F5;
+
+  --text-primary: #171717;
+  --text-secondary: #525252;
+  --text-tertiary: #737373;
+
+  --border-color: #E5E5E5;
+  --border-color-hover: #D4D4D4;
+
+  /* Layout */
+  --sidebar-width: 240px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -151,4 +245,130 @@
 /* Alternative: target by the specific classes seen in the dropdown */
 div[class*="overflow-h"] {
   overflow: visible !important;
+}
+
+/* ============================================
+   Layout Classes
+   ============================================ */
+
+.with-sidebar {
+  margin-left: var(--sidebar-width);
+}
+
+/* ============================================
+   Custom Component Styles
+   ============================================ */
+
+/* Stat Cards */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+.stat-card-blue::before {
+  background: linear-gradient(90deg, #2322F0, #3F8EEE);
+}
+
+.stat-card-green::before {
+  background: linear-gradient(90deg, #1CC101, #56ADC0);
+}
+
+.stat-card-purple::before {
+  background: linear-gradient(90deg, #B561FF, #2322F0);
+}
+
+.stat-card-orange::before {
+  background: linear-gradient(90deg, #FAA92F, #D97706);
+}
+
+/* Stagger animation delays */
+.stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stat-card:nth-child(3) { animation-delay: 0.15s; }
+.stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+/* Metric Value Typography */
+.metric-value {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Action Items with Hover Effect */
+.action-item {
+  transition: all var(--transition-fast);
+}
+
+.action-item:hover {
+  transform: translateX(4px);
+}
+
+/* Study Items with Hover Effect */
+.study-item {
+  transition: all var(--transition-fast);
+}
+
+.study-item:hover {
+  transform: translateX(4px);
+}
+
+/* Gradient Icon Backgrounds */
+.icon-gradient-blue {
+  background: linear-gradient(135deg, #EDEEFA, #F5F5FC);
+  color: #152B99;
+}
+
+.icon-gradient-green {
+  background: linear-gradient(135deg, #E3FBDF, #F0FDF4);
+  color: #117C00;
+}
+
+.icon-gradient-purple {
+  background: linear-gradient(135deg, #F2E9FF, #FAF5FF);
+  color: #962FEA;
+}
+
+.icon-gradient-orange {
+  background: linear-gradient(135deg, #FFEED3, #FFFBEB);
+  color: #D97706;
+}
+
+/* Page Animations */
+.page-animate {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-animate {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }

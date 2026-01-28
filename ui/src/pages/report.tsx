@@ -158,7 +158,7 @@ export default function ReportGenerator() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-blue-50">
+      <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="container mx-auto px-8 py-8">
           <CardLayout padding="MORE" showShadow={true}>
             <RichTextDisplayField value={['Loading...']} />
@@ -169,7 +169,7 @@ export default function ReportGenerator() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <div className="container mx-auto px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
