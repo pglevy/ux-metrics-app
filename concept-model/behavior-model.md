@@ -126,24 +126,39 @@ This document describes the key interactions, workflows, and behavioral patterns
 
 **Actor**: Product team member
 
-**Purpose**: Generate shareable reports with aggregated metrics
+**Purpose**: Generate shareable reports with aggregated metrics and visualizations
 
 **Steps:**
-1. User selects a study to generate a report for
-2. System retrieves all sessions and assessment responses for the study
-3. System calculates aggregated metrics:
+1. User navigates to Report Generator
+2. User selects a study to generate a report for
+3. System retrieves all sessions and assessment responses for the study
+4. System calculates aggregated metrics:
    - Mean for Task Success Rate, Task Efficiency, Error Rate, SEQ
    - Median for Time on Task
-4. System counts unique participants and total sessions
-5. User optionally adds commentary or notes
-6. System generates report with visualizations
-7. User exports report as JSON
+5. System counts unique participants and total sessions
+6. System generates visualizations:
+   - Success Rate by Task (bar chart)
+   - Time on Task Trends (line chart)
+7. User optionally adds commentary or notes
+8. User exports report as JSON for sharing
+9. System includes all data: metrics, charts, commentary, metadata
 
 **Business Logic:**
 - Reports include all sessions in the study by default
 - Filtering by date range, participant, or task is supported
 - Empty data sets return null metrics (not errors)
 - Commentary is optional and included in export
+- Reports are generated on-demand (not stored)
+- JSON export includes complete data for reproducibility
+
+**Report Contents:**
+- Study metadata (name, product, feature, dates)
+- Session count and participant count
+- Aggregated metrics with calculation methods
+- Visualization data (chart datasets)
+- Optional commentary
+- Generation timestamp
+- Schema version for compatibility
 
 **Aggregation Rules:**
 | Metric | Aggregation Method |
@@ -153,6 +168,12 @@ This document describes the key interactions, workflows, and behavioral patterns
 | Task Efficiency | Mean (average) |
 | Error Rate | Mean (average) |
 | SEQ | Mean (average) |
+
+**Export Format:**
+- JSON structure matching Report schema
+- Human-readable formatting
+- Includes all raw data for re-analysis
+- Compatible with import/restore functionality
 
 ---
 
@@ -251,6 +272,89 @@ This document describes the key interactions, workflows, and behavioral patterns
 
 ---
 
+### 7. Analytics and Metrics Exploration Workflow
+
+**Actor**: Product team member / UX Researcher
+
+**Purpose**: Explore and analyze aggregated metrics across sessions with filtering
+
+**Steps:**
+1. User navigates to Metrics Dashboard
+2. User selects a study from dropdown
+3. System displays aggregated metrics:
+   - Task Success Rate (mean)
+   - Time on Task (median)
+   - Task Efficiency (mean)
+   - Error Rate (mean)
+   - SEQ Score (mean)
+4. User optionally applies filters:
+   - Participant: Filter by specific participant
+   - Task: Filter by task description
+   - Date Range: Filter by start/end dates
+5. System recalculates metrics based on filters
+6. System displays visualizations:
+   - Success Rate by Task (bar chart)
+   - Time on Task Trends (line chart)
+7. User can clear filters to return to full dataset
+8. User can navigate to Report Generator for shareable output
+
+**Business Logic:**
+- Metrics are calculated in real-time based on assessment responses
+- Time on Task uses median (middle value) to reduce outlier impact
+- All other metrics use mean (average) for aggregation
+- Filters are cumulative (all active filters apply simultaneously)
+- Empty result sets display "N/A" rather than errors
+- Charts update dynamically when filters change
+
+**Aggregation Rules:**
+| Metric | Calculation Method | Rationale |
+|--------|-------------------|-----------|
+| Task Success Rate | Mean (average) | Represents overall success across attempts |
+| Time on Task | Median (middle value) | Reduces impact of extreme outliers |
+| Task Efficiency | Mean (average) | Represents average efficiency across tasks |
+| Error Rate | Mean (average) | Represents average error frequency |
+| SEQ | Mean (average) | Represents average perceived ease |
+
+**Filter Behavior:**
+- **Participant Filter**: Shows metrics for selected participant only
+- **Task Filter**: Shows metrics for tasks matching description (partial match)
+- **Date Range**: Filters sessions by creation date (inclusive)
+- **Combined Filters**: All active filters apply together (AND logic)
+
+---
+
+### 8. Metrics Comparison Workflow
+
+**Actor**: Product team member / UX Researcher
+
+**Purpose**: Compare metrics between studies or time periods to identify trends
+
+**Steps:**
+1. User selects baseline study or time period
+2. User selects comparison study or time period
+3. System calculates metrics for both datasets
+4. System computes differences (comparison - baseline)
+5. System computes percentage changes
+6. System displays comparison results with indicators:
+   - Positive changes (improvements) highlighted in green
+   - Negative changes (regressions) highlighted in red
+   - Neutral changes shown in gray
+
+**Business Logic:**
+- Comparisons can be between different studies
+- Comparisons can be between time periods within same study
+- Percentage change calculated as: ((comparison - baseline) / baseline) × 100
+- Division by zero returns null (not error)
+- Missing data in either set returns null for that metric
+
+**Use Cases:**
+- Compare before/after design changes
+- Compare different product features
+- Track improvement over time
+- Identify regression in usability
+
+---
+
 ## Business Rules & Invariants
 
 ### Invariants (Always True)
@@ -284,6 +388,16 @@ This document describes the key interactions, workflows, and behavioral patterns
 | AssessmentResponse | taskDescription | Required |
 | SEQ | rating | Required, integer 1-7 |
 
+### Analytics & Reporting Rules
+- Time on Task aggregates using median (not mean) to reduce outlier impact
+- All other metrics aggregate using mean (average)
+- Filters apply cumulatively (AND logic, not OR)
+- Empty result sets return null metrics (not errors or zeros)
+- Percentage changes handle division by zero gracefully (return null)
+- Reports are generated on-demand and not persisted
+- Visualizations update dynamically when filters change
+- Date range filters are inclusive of both start and end dates
+
 ### Error Handling Rules
 | Scenario | Response |
 |----------|----------|
@@ -305,10 +419,17 @@ This document describes the key interactions, workflows, and behavioral patterns
 - Business rules and validation rules defined
 - Error handling patterns established
 
+**2026-01-28**: Analytics and reporting workflows added
+- Analytics and Metrics Exploration workflow documented
+- Metrics Comparison workflow documented
+- Enhanced Report Generation workflow with visualizations
+- Analytics-specific business rules added
+- Aggregation methods and filter behavior documented
+
 **Future Considerations:**
 - Status transition rules (e.g., require assessments before completion)
 - Authorization (who can create/modify what)
 - Notification on session completion
 - Automatic archival after inactivity period
-- Comparison workflows between studies
-- Trend analysis over time
+- Advanced trend analysis with predictive insights
+- Multi-study comparison dashboards
