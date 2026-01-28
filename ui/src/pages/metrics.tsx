@@ -12,8 +12,8 @@ import type { Study, Person, AggregatedMetrics } from '../../../api/types'
 import { getAllStudies, getStudyById } from '../services/studyService'
 import { getByRole } from '../services/personService'
 import { getStudyMetrics, formatMetricsForDisplay, getUniqueTaskDescriptions, type AnalyticsFilters } from '../services/analyticsService'
-import SuccessRateChart from '../components/charts/SuccessRateChart'
-import TimeOnTaskChart from '../components/charts/TimeOnTaskChart'
+import SuccessRateChart from '../components/charts/SuccessRateChart.tsx'
+import TimeOnTaskChart from '../components/charts/TimeOnTaskChart.tsx'
 import MetricCard from '../components/MetricCard'
 
 /**
@@ -46,6 +46,7 @@ export default function MetricsDashboard() {
   const [selectedTask, setSelectedTask] = useState<string>('')
   const [dateFrom, setDateFrom] = useState<string>('')
   const [dateTo, setDateTo] = useState<string>('')
+  const [filtersExpanded, setFiltersExpanded] = useState(true)
 
   // Load studies on mount
   useEffect(() => {
@@ -161,8 +162,8 @@ export default function MetricsDashboard() {
       <div className="container mx-auto px-8 py-8">
         {/* Header */}
         <header className="mb-8" style={{ animation: 'fadeInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-start justify-between gap-6">
+            <div className="flex-1">
               <h1 className="text-3xl font-semibold mb-2" style={{
                 color: 'var(--text-primary)',
                 letterSpacing: '-0.03em'
@@ -173,55 +174,84 @@ export default function MetricsDashboard() {
                 Analyze aggregated usability testing metrics and trends
               </p>
             </div>
-            <div className="flex gap-3">
-              <ButtonWidget
-                label="Generate Report"
-                style="SOLID"
-                color="ACCENT"
-                onClick={() => navigate(`/reports${selectedStudyId ? `?studyId=${selectedStudyId}` : ''}`)}
-              />
+            <div className="flex gap-3 items-start">
+              {/* Study Selector */}
+              {studies.length > 0 && (
+                <div style={{ minWidth: '300px' }}>
+                  <DropdownField
+                    key={`study-dropdown-${studies.length}`}
+                    label="Study"
+                    labelPosition="ABOVE"
+                    choiceLabels={['Select a study...', ...studies.map(s => s.name)]}
+                    choiceValues={['', ...studies.map(s => s.id)]}
+                    value={selectedStudyId}
+                    onChange={handleStudyChange}
+                    marginBelow="NONE"
+                  />
+                </div>
+              )}
+              <div style={{ marginTop: '30px' }}>
+                <ButtonWidget
+                  label="Generate Report"
+                  style="SOLID"
+                  color="ACCENT"
+                  onClick={() => navigate(`/reports${selectedStudyId ? `?studyId=${selectedStudyId}` : ''}`)}
+                  className="mb-0"
+                />
+              </div>
             </div>
           </div>
         </header>
 
-        {/* Study Selector */}
-        <CardLayout padding="MORE" showShadow={true}>
-          <HeadingField
-            text="Select Study"
-            size="MEDIUM"
-            headingTag="H2"
-            marginBelow="STANDARD"
-          />
-          {studies.length === 0 ? (
+        {/* No studies message */}
+        {studies.length === 0 && (
+          <CardLayout padding="MORE" showShadow={true}>
             <RichTextDisplayField
               value={['No studies available. Create a study first to view metrics.']}
             />
-          ) : (
-            <div className="max-w-md">
-              <DropdownField
-                key={`study-dropdown-${studies.length}`}
-                label="Study"
-                labelPosition="ABOVE"
-                choiceLabels={['Select a study...', ...studies.map(s => s.name)]}
-                choiceValues={['', ...studies.map(s => s.id)]}
-                value={selectedStudyId}
-                onChange={handleStudyChange}
-              />
-            </div>
-          )}
-        </CardLayout>
+          </CardLayout>
+        )}
 
         {/* Filter Controls */}
         {selectedStudyId && (
-          <div className="mt-6">
+          <div className="mb-6">
             <CardLayout padding="MORE" showShadow={true}>
-              <div className="flex items-center justify-between mb-4">
-                <HeadingField
-                  text="Filters"
-                  size="MEDIUM"
-                  headingTag="H2"
-                  marginBelow="NONE"
-                />
+              <div className="flex items-center justify-between mb-0">
+                <button
+                  onClick={() => setFiltersExpanded(!filtersExpanded)}
+                  className="flex items-center gap-2"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: 0
+                  }}
+                >
+                  <HeadingField
+                    text="Filters"
+                    size="MEDIUM"
+                    headingTag="H2"
+                    marginBelow="NONE"
+                  />
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    style={{
+                      transform: filtersExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform var(--transition-base)'
+                    }}
+                  >
+                    <path
+                      d="M5 7.5L10 12.5L15 7.5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
                 {hasActiveFilters && (
                   <ButtonWidget
                     label="Clear Filters"
@@ -231,50 +261,52 @@ export default function MetricsDashboard() {
                   />
                 )}
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Participant Filter */}
-                <DropdownField
-                  label="Participant"
-                  labelPosition="ABOVE"
-                  choiceLabels={participantOptions.map(o => o.label)}
-                  choiceValues={participantOptions.map(o => o.id)}
-                  value={selectedParticipantId}
-                  onChange={(value) => {
-                    setSelectedParticipantId(value)
-                  }}
-                />
-                
-                {/* Task Filter */}
-                <DropdownField
-                  label="Task"
-                  labelPosition="ABOVE"
-                  choiceLabels={taskOptions.map(o => o.label)}
-                  choiceValues={taskOptions.map(o => o.id)}
-                  value={selectedTask}
-                  onChange={(value) => {
-                    setSelectedTask(value)
-                  }}
-                />
-                
-                {/* Date From */}
-                <TextField
-                  label="Date From"
-                  labelPosition="ABOVE"
-                  placeholder="YYYY-MM-DD"
-                  value={dateFrom}
-                  onChange={(value) => setDateFrom(value)}
-                />
-                
-                {/* Date To */}
-                <TextField
-                  label="Date To"
-                  labelPosition="ABOVE"
-                  placeholder="YYYY-MM-DD"
-                  value={dateTo}
-                  onChange={(value) => setDateTo(value)}
-                />
-              </div>
+
+              {filtersExpanded && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Participant Filter */}
+                  <DropdownField
+                    label="Participant"
+                    labelPosition="ABOVE"
+                    choiceLabels={participantOptions.map(o => o.label)}
+                    choiceValues={participantOptions.map(o => o.id)}
+                    value={selectedParticipantId}
+                    onChange={(value) => {
+                      setSelectedParticipantId(value)
+                    }}
+                  />
+
+                  {/* Task Filter */}
+                  <DropdownField
+                    label="Task"
+                    labelPosition="ABOVE"
+                    choiceLabels={taskOptions.map(o => o.label)}
+                    choiceValues={taskOptions.map(o => o.id)}
+                    value={selectedTask}
+                    onChange={(value) => {
+                      setSelectedTask(value)
+                    }}
+                  />
+
+                  {/* Date From */}
+                  <TextField
+                    label="Date From"
+                    labelPosition="ABOVE"
+                    placeholder="YYYY-MM-DD"
+                    value={dateFrom}
+                    onChange={(value) => setDateFrom(value)}
+                  />
+
+                  {/* Date To */}
+                  <TextField
+                    label="Date To"
+                    labelPosition="ABOVE"
+                    placeholder="YYYY-MM-DD"
+                    value={dateTo}
+                    onChange={(value) => setDateTo(value)}
+                  />
+                </div>
+              )}
             </CardLayout>
           </div>
         )}
