@@ -19,7 +19,17 @@ interface StatCardProps {
 
 export default function StatCard({ icon, label, value, subtitle, trend, variant }: StatCardProps) {
   return (
-    <div className={`stat-card stat-card-${variant}`}>
+    <div
+      className={`stat-card stat-card-${variant}`}
+      style={{
+        border: '1px solid var(--border-color)',
+        background: 'var(--bg-secondary)',
+        padding: '24px',
+        borderRadius: '12px',
+        boxShadow: 'var(--shadow-md)',
+        transition: 'all var(--transition-base)'
+      }}
+    >
       <div className="flex items-start gap-4">
         <div className={`stat-icon icon-gradient-${variant}`}>
           {icon}

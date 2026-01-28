@@ -11,14 +11,15 @@
  */
 
 import { Study } from '../../../api/types';
-import { 
-  STORAGE_KEYS, 
-  getAll, 
-  getById, 
-  save, 
-  update, 
+import {
+  STORAGE_KEYS,
+  getAll,
+  getById,
+  save,
+  update,
+  remove,
   generateId,
-  StorageResult 
+  StorageResult
 } from './storage';
 
 /**
@@ -222,10 +223,10 @@ export function unarchiveStudy(id: string): StorageResult {
 /**
  * Gets studies formatted for dropdown selection.
  * Returns an array of objects with id and display label.
- * 
+ *
  * @param includeArchived - Whether to include archived studies (default: false)
  * @returns Array of objects with id and label properties
- * 
+ *
  * @example
  * const options = getStudiesForDropdown();
  * // Returns: [{ id: 'study-123', label: 'Checkout Flow Study' }, ...]
@@ -238,4 +239,33 @@ export function getStudiesForDropdown(
     id: study.id,
     label: study.name,
   }));
+}
+
+/**
+ * Permanently deletes a study from storage.
+ * WARNING: This is a hard delete and cannot be undone.
+ * Consider using archiveStudy() for soft deletion instead.
+ *
+ * @param id - The unique identifier of the study to delete
+ * @returns StorageResult indicating success or failure
+ *
+ * @example
+ * const result = deleteStudy('study-123');
+ * if (result.success) {
+ *   console.log('Study deleted permanently');
+ * } else {
+ *   console.error(result.error);
+ * }
+ */
+export function deleteStudy(id: string): StorageResult {
+  const existingStudy = getStudyById(id);
+
+  if (!existingStudy) {
+    return {
+      success: false,
+      error: `Study with id "${id}" not found.`,
+    };
+  }
+
+  return remove(STORAGE_KEYS.STUDIES, id);
 }

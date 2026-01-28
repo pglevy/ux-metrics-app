@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { HeadingField, CardLayout, RichTextDisplayField, ButtonWidget } from '@pglevy/sailwind'
+import { HeadingField, CardLayout } from '@pglevy/sailwind'
 import { loadSeedDataIfEmpty } from '../data/seedData'
 import { getAllStudies } from '../services/studyService'
 import { getByRole } from '../services/personService'
+import type { Study } from '../../../api/types'
 import StatCard from '../components/StatCard'
 
 /**
@@ -23,6 +24,7 @@ export default function Home() {
     participants: 0,
     reports: 0
   })
+  const [recentStudies, setRecentStudies] = useState<Study[]>([])
 
   useEffect(() => {
     loadSeedDataIfEmpty()
@@ -38,6 +40,13 @@ export default function Home() {
       participants,
       reports: 0 // Would come from report service
     })
+
+    // Load recent studies (most recent 4, non-archived)
+    const recent = studies
+      .filter(s => !s.archived)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 4)
+    setRecentStudies(recent)
   }, [])
 
   return (
@@ -58,123 +67,132 @@ export default function Home() {
 
         {/* Quick Stats */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          <div className="border rounded-lg" style={{ borderColor: 'var(--border-color)', background: 'var(--bg-secondary)', padding: '24px', boxShadow: 'var(--shadow-md)', transition: 'all var(--transition-base)' }}>
-            <StatCard
-              icon={
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
-                  <line x1="4" y1="10" x2="20" y2="10" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-              }
-              label="Active Studies"
-              value={stats.activeStudies}
-              subtitle="Currently running"
-              variant="blue"
-            />
-          </div>
+          <StatCard
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <line x1="4" y1="10" x2="20" y2="10" stroke="currentColor" strokeWidth="2"/>
+              </svg>
+            }
+            label="Active Studies"
+            value={stats.activeStudies}
+            subtitle="Currently running"
+            variant="blue"
+          />
 
-          <div className="border rounded-lg" style={{ borderColor: 'var(--border-color)', background: 'var(--bg-secondary)', padding: '24px', boxShadow: 'var(--shadow-md)', transition: 'all var(--transition-base)' }}>
-            <StatCard
-              icon={
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 18L9 13L13 16L20 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="4" cy="18" r="2" fill="currentColor"/>
-                  <circle cx="9" cy="13" r="2" fill="currentColor"/>
-                  <circle cx="13" cy="16" r="2" fill="currentColor"/>
-                  <circle cx="20" cy="9" r="2" fill="currentColor"/>
-                </svg>
-              }
-              label="Sessions Completed"
-              value={stats.completedSessions}
-              subtitle="Total sessions"
-              variant="green"
-            />
-          </div>
+          <StatCard
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M4 18L9 13L13 16L20 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="4" cy="18" r="2" fill="currentColor"/>
+                <circle cx="9" cy="13" r="2" fill="currentColor"/>
+                <circle cx="13" cy="16" r="2" fill="currentColor"/>
+                <circle cx="20" cy="9" r="2" fill="currentColor"/>
+              </svg>
+            }
+            label="Sessions Completed"
+            value={stats.completedSessions}
+            subtitle="Total sessions"
+            variant="green"
+          />
 
-          <div className="border rounded-lg" style={{ borderColor: 'var(--border-color)', background: 'var(--bg-secondary)', padding: '24px', boxShadow: 'var(--shadow-md)', transition: 'all var(--transition-base)' }}>
-            <StatCard
-              icon={
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="9" r="4" stroke="currentColor" strokeWidth="2"/>
-                  <path d="M4 21C4 16.5 7.5 15 12 15C16.5 15 20 16.5 20 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              }
-              label="Participants"
-              value={stats.participants}
-              subtitle="Total enrolled"
-              variant="purple"
-            />
-          </div>
+          <StatCard
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="9" r="4" stroke="currentColor" strokeWidth="2"/>
+                <path d="M4 21C4 16.5 7.5 15 12 15C16.5 15 20 16.5 20 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            }
+            label="Participants"
+            value={stats.participants}
+            subtitle="Total enrolled"
+            variant="purple"
+          />
 
-          <div className="border rounded-lg" style={{ borderColor: 'var(--border-color)', background: 'var(--bg-secondary)', padding: '24px', boxShadow: 'var(--shadow-md)', transition: 'all var(--transition-base)' }}>
-            <StatCard
-              icon={
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="2"/>
-                  <line x1="9" y1="9" x2="15" y2="9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  <line x1="9" y1="13" x2="15" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  <line x1="9" y1="17" x2="12" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              }
-              label="Reports Generated"
-              value={stats.reports}
-              subtitle="All time"
-              variant="orange"
-            />
-          </div>
+          <StatCard
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <line x1="9" y1="9" x2="15" y2="9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="9" y1="13" x2="15" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <line x1="9" y1="17" x2="12" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            }
+            label="Reports Generated"
+            value={stats.reports}
+            subtitle="All time"
+            variant="orange"
+          />
         </section>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Navigation Cards */}
-          <div className="space-y-4 card-animate" style={{ animationDelay: '0.25s' }}>
+          {/* Recent Studies */}
+          <div className="card-animate" style={{ animationDelay: '0.25s' }}>
             <CardLayout padding="MORE" showShadow={true}>
-              <HeadingField
-                text="Studies"
-                size="MEDIUM"
-                headingTag="H2"
-                marginBelow="STANDARD"
-              />
-              <RichTextDisplayField
-                value={[
-                  'Create and manage usability studies.',
-                  'Track sessions and assessments for each study.',
-                ]}
-                marginBelow="MORE"
-              />
-              <ButtonWidget
-                label="View Studies"
-                style="SOLID"
-                color="ACCENT"
-                onClick={() => navigate('/studies')}
-              />
-            </CardLayout>
-
-            <CardLayout padding="MORE" showShadow={true}>
-              <HeadingField
-                text="People"
-                size="MEDIUM"
-                headingTag="H2"
-                marginBelow="STANDARD"
-              />
-              <RichTextDisplayField
-                value={[
-                  'Manage participants, facilitators, and observers.',
-                  'Assign people to sessions.',
-                ]}
-                marginBelow="MORE"
-              />
-              <ButtonWidget
-                label="View People"
-                style="SOLID"
-                color="ACCENT"
-                onClick={() => navigate('/people')}
-              />
+              <div className="flex items-center justify-between mb-6">
+                <HeadingField
+                  text="Recent Studies"
+                  size="MEDIUM"
+                  headingTag="H2"
+                  marginBelow="NONE"
+                />
+                <button
+                  onClick={() => navigate('/studies')}
+                  className="text-sm font-medium"
+                  style={{
+                    color: 'var(--text-secondary)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'color var(--transition-fast)'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#2322F0'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                >
+                  View all →
+                </button>
+              </div>
+              <div className="space-y-3">
+                {recentStudies.length === 0 ? (
+                  <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    No studies yet. Create your first study to get started.
+                  </div>
+                ) : (
+                  recentStudies.map((study) => (
+                    <button
+                      key={study.id}
+                      onClick={() => navigate(`/studies/${study.id}`)}
+                      className="study-item w-full p-4 rounded-lg text-left"
+                      style={{
+                        background: 'var(--bg-tertiary)',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <h3 className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>
+                        {study.name}
+                      </h3>
+                      <div className="text-xs flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+                        <span>{study.productId}</span>
+                        {study.featureId && (
+                          <>
+                            <span>•</span>
+                            <span>{study.featureId}</span>
+                          </>
+                        )}
+                        <span>•</span>
+                        <span>{new Date(study.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
             </CardLayout>
           </div>
 
           {/* Quick Actions */}
-          <div className="space-y-4 card-animate" style={{ animationDelay: '0.3s' }}>
+          <div className="card-animate" style={{ animationDelay: '0.3s' }}>
             <CardLayout padding="MORE" showShadow={true}>
               <HeadingField
                 text="Quick Actions"
@@ -193,7 +211,7 @@ export default function Home() {
                     textAlign: 'left'
                   }}
                 >
-                  <div className="icon-gradient-blue w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="icon-gradient-blue w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ border: '1px solid rgba(21, 43, 153, 0.15)' }}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
@@ -218,7 +236,7 @@ export default function Home() {
                     textAlign: 'left'
                   }}
                 >
-                  <div className="icon-gradient-green w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="icon-gradient-green w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ border: '1px solid rgba(17, 124, 0, 0.15)' }}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <circle cx="10" cy="8" r="3" stroke="currentColor" strokeWidth="1.5"/>
                       <path d="M4 17C4 14 6.5 13 10 13C13.5 13 16 14 16 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -244,7 +262,7 @@ export default function Home() {
                     textAlign: 'left'
                   }}
                 >
-                  <div className="icon-gradient-purple w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="icon-gradient-purple w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ border: '1px solid rgba(150, 47, 234, 0.15)' }}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <rect x="4" y="3" width="12" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
                       <line x1="7" y1="7" x2="13" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -271,7 +289,7 @@ export default function Home() {
                     textAlign: 'left'
                   }}
                 >
-                  <div className="icon-gradient-orange w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="icon-gradient-orange w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ border: '1px solid rgba(217, 119, 6, 0.15)' }}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <path d="M3 14L7 10L11 13L17 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       <circle cx="3" cy="14" r="1.5" fill="currentColor"/>
@@ -293,48 +311,6 @@ export default function Home() {
             </CardLayout>
           </div>
         </div>
-
-        {/* Getting Started Guide */}
-        <section className="card-animate" style={{ animationDelay: '0.35s' }}>
-          <CardLayout padding="MORE" showShadow={true}>
-            <HeadingField
-              text="Getting Started"
-              size="MEDIUM"
-              headingTag="H2"
-              marginBelow="STANDARD"
-            />
-            <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
-              Follow these steps to begin tracking usability metrics
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              {[
-                { num: 1, title: 'Create a Study', desc: 'Define your research goals' },
-                { num: 2, title: 'Add People', desc: 'Register participants' },
-                { num: 3, title: 'Create Sessions', desc: 'Schedule testing sessions' },
-                { num: 4, title: 'Administer Assessments', desc: 'Capture metrics' },
-                { num: 5, title: 'Analyze & Report', desc: 'View aggregated data' },
-              ].map((step) => (
-                <div key={step.num} className="text-center">
-                  <div
-                    className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center text-lg font-bold font-mono"
-                    style={{
-                      background: 'linear-gradient(135deg, #EDEEFA, #F5F5FC)',
-                      color: '#152B99'
-                    }}
-                  >
-                    {step.num}
-                  </div>
-                  <h3 className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>
-                    {step.title}
-                  </h3>
-                  <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                    {step.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardLayout>
-        </section>
       </div>
     </div>
   )
