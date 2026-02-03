@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-template:
+    name: Build Template UI
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: ui/package-lock.json
+        
+    - name: Install dependencies
+      working-directory: ui
+      run: npm ci
+      
+    - name: Run linter
+      working-directory: ui
+      run: npm run lint
+      
+    - name: Build
+      working-directory: ui
+      run: npm run build
+      
+  build-example:
+    name: Build Ticketing Example
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: examples/ticketing-system/ui/package-lock.json
+        
+    - name: Install dependencies
+      working-directory: examples/ticketing-system/ui
+      run: npm ci
+      
+    - name: Run linter
+      working-directory: examples/ticketing-system/ui
+      run: npm run lint
+      
+    - name: Build
+      working-directory: examples/ticketing-system/ui
+      run: npm run build
+      
+  validate-schema:
+    name: Validate OpenAPI Schemas
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install OpenAPI validator
+      run: npm install -g @ibm-cloud/openapi-ruleset-utilities
+      
+    - name: Validate template schema
+      run: |
+        if [ -f "schema/api-contract.yaml" ]; then
+          echo "Validating template schema..."
+          # Add validation command here when ready
+          echo "Schema validation placeholder - add validator in future"
+        fi
+        
+    - name: Validate example schema
+      run: |
+        if [ -f "examples/ticketing-system/schema/api-contract.yaml" ]; then
+          echo "Validating example schema..."
+          # Add validation command here when ready
+          echo "Schema validation placeholder - add validator in future"
+        fi

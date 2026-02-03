@@ -1,335 +1,287 @@
-# Schema-First Starter Template
+# UX Metrics Capture & Review
 
-**Keep your API contract and concept model synchronized with your prototypes.**
+> A comprehensive tool for capturing, analyzing, and reporting on usability study metrics.
 
-## The Problem
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
 
-When building prototypes:
-1. 🎨 **Product teams** build sophisticated, interactive prototypes
-2. 📹 **Developers** receive videos and prototype code
-3. 🔍 **Developers** must reverse-engineer the implied API contract
-4. 📝 **Schema gets documented** after the fact (if at all)
-5. ⚠️ **Misalignment** between prototype and implementation
+---
 
-Result: **Long translation time from prototype to production API**
+## Overview
 
-## The Solution
+UX Metrics is a web application designed for product teams and UX researchers to systematically capture, analyze, and report on usability study data. It supports multiple assessment types including task success rates, time on task, task efficiency, error rates, and Single Ease Question (SEQ) ratings.
 
-**Maintain the contract layer as you prototype:**
+### Key Capabilities
 
-```
-┌─────────────────────────────────────────┐
-│  UI Prototypes (React/etc)              │ ← Build here
-├─────────────────────────────────────────┤
-│  API Contract (OpenAPI)                 │ ← Skills maintain
-├─────────────────────────────────────────┤
-│  Concept Model (domain + behavior docs) │ ← Skills maintain
-├─────────────────────────────────────────┤
-│  Types & Mock API (generated)           │ ← Generated
-└─────────────────────────────────────────┘
-```
+- **Study Management** - Organize evaluation sessions by product and feature
+- **Session Tracking** - Record participant sessions with facilitators and observers
+- **Multiple Assessment Types** - Capture five standard usability metrics
+- **Real-time Calculations** - Automatic metric computation during data entry
+- **Analytics Dashboard** - Explore aggregated metrics with filtering
+- **Report Generation** - Create shareable reports with visualizations
+- **Data Portability** - Export/import all data as JSON
 
-### How It Works
+---
 
-As your prototype evolves, **AI skills automatically keep your API schema and concept model in sync**:
+## Features
 
-1. **Build prototype**: Add features using regular React/TypeScript
-2. **AI detects changes**: "I see you added a priority field"
-3. **AI proposes schema update**: Shows exact OpenAPI changes needed
-4. **You approve**: Quick review and approval
-5. **AI updates artifacts**: Schema → concept docs → types all synchronized
-6. **Keep prototyping**: Contract stays aligned automatically
+### Assessment Types
 
-### What Developers Receive
+- **Task Success Rate** - Percentage of users completing tasks correctly
+- **Time on Task** - Duration to complete specific tasks (median aggregation)
+- **Task Efficiency** - Ratio of optimal steps to actual steps taken
+- **Error Rate** - Percentage of errors during task completion
+- **SEQ (Single Ease Question)** - 1-7 rating scale for perceived task difficulty
 
-Instead of reverse-engineering your prototype, developers get:
+### Analytics & Reporting
 
-- ✅ **Complete OpenAPI schema** defining the exact API contract
-- ✅ **Domain model** explaining entities, relationships, and business rules
-- ✅ **Behavior model** documenting workflows and state transitions
-- ✅ **Evolution log** showing how requirements emerged and why
-- ✅ **Working prototype** already using the real API shape
+- Aggregated metrics across sessions
+- Filter by participant, task, or date range
+- Interactive visualizations (bar charts, line charts)
+- Exportable reports in JSON format
+- Metrics comparison between studies
 
-**Result:** Shorter time from prototype to production API.
+### Data Management
+
+- People management (participants, facilitators, observers)
+- Reusable assessment type templates
+- Complete data backup and restore
+- Seed data for demonstration
 
 ---
 
 ## Quick Start
 
-### Option A: Run the Ticketing Example (Recommended First Step)
+### Prerequisites
 
-See how the Schema-First workflow works with a complete example:
+- Node.js 18+ and npm
+- Modern web browser
 
-```bash
-# Clone this repo
-git clone <your-repo-url>
-cd skills-first-starter
-
-# Navigate to the ticketing example
-cd examples/ticketing-system/ui
-
-# Install and run
-npm install
-npm run dev
-```
-
-Visit [http://localhost:5173](http://localhost:5173) to see the working ticketing system.
-
-Explore the example artifacts:
-- [examples/ticketing-system/schema/](./examples/ticketing-system/schema/) - Complete API contract
-- [examples/ticketing-system/concept-model/](./examples/ticketing-system/concept-model/) - Domain and behavior docs
-- [examples/ticketing-system/ui/](./examples/ticketing-system/ui/) - Working React prototype
-
-See the [example README](./examples/ticketing-system/README.md) for more details.
-
----
-
-### Option B: Start Your Own Project
-
-Use the clean template for your domain:
+### Installation
 
 ```bash
-# From the root of the repo
+# Clone the repository
+git clone https://github.com/YOUR-USERNAME/ux-metrics-app.git
+cd ux-metrics-app
+
+# Install dependencies
 cd ui
 npm install
+
+# Start the development server
 npm run dev
 ```
 
-The top-level folders are clean placeholders:
-- `schema/` - Empty API contract (replace with your domain)
-- `concept-model/` - Template docs (fill in your entities/workflows)
-- `api/` - Empty types and mock server (generate from your schema)
-- `ui/` - Clean React starter (build your prototype)
+Visit http://localhost:5173 to access the application.
 
-**Next Steps:**
-1. Define your initial schema in [schema/api-contract.yaml](./schema/api-contract.yaml)
-2. Start building your prototype in [ui/src/pages/](./ui/src/pages/)
-3. Use the skills (schema-evolution, concept-sync, contract-validator) to keep artifacts aligned
+### First Use
+
+The application loads with demonstration data on first launch. You can:
+
+1. **Explore Studies** - View pre-populated usability studies
+2. **Review Sessions** - See example participant sessions
+3. **Check Metrics** - Explore the analytics dashboard
+4. **Generate Reports** - Create sample reports
+
+To start fresh, use Settings → Clear All Data.
 
 ---
 
-### Try the Skills
+## Usage
 
-Whether using the example or your own project, you can invoke the contract-maintenance skills:
+### Creating a Study
 
-```bash
-# Detect schema needs and propose updates
-/schema-evolution "Add priority field to tickets"
+1. Navigate to Studies
+2. Click "Create New Study"
+3. Enter study name, product ID, and optional feature ID
+4. Save to begin adding sessions
 
-# Keep concept model synchronized
-/concept-sync "Update docs for priority field"
+### Conducting a Session
 
-# Validate consistency across artifacts
-/contract-validator "Full contract validation"
-```
+1. Open a study and click "New Session"
+2. Select participant and facilitator from people list
+3. Optionally add observers
+4. Administer assessments:
+   - Choose assessment type
+   - Enter task description
+   - Capture metric data
+   - System calculates results automatically
+5. Mark session as complete when finished
 
-See [docs/workflow-walkthrough.md](./docs/workflow-walkthrough.md) for a complete walkthrough with examples.
+### Analyzing Metrics
+
+1. Navigate to Metrics Dashboard
+2. Select a study
+3. View aggregated metrics:
+   - Task Success Rate (mean)
+   - Time on Task (median)
+   - Task Efficiency (mean)
+   - Error Rate (mean)
+   - SEQ Score (mean)
+4. Apply filters to narrow analysis
+5. Review visualizations
+
+### Generating Reports
+
+1. Navigate to Report Generator
+2. Select a study
+3. Review aggregated metrics and charts
+4. Add optional commentary
+5. Export as JSON for sharing
 
 ---
 
 ## Project Structure
 
 ```
-skills-first-starter/
-├── schema/                         # YOUR API contract (clean template)
-│   ├── api-contract.yaml           # OpenAPI 3.1 schema
-│   └── evolution-log.md            # Schema change history
-├── concept-model/                  # YOUR domain docs (clean template)
-│   ├── domain-model.md             # Entities, relationships, business rules
-│   └── behavior-model.md           # Workflows, state transitions
-├── api/                            # Generated artifacts (empty until you generate)
-│   ├── types/                      # TypeScript types from schema
-│   └── mock-server/                # Mock API implementation
-├── ui/                             # YOUR prototype UI (clean starter)
-│   └── src/
-│       ├── pages/                  # React pages for your domain
-│       └── ...                     # Vite + React + Sailwind setup
-├── .claude/skills/                 # Contract-maintenance skills (ready to use)
-│   ├── schema-evolution.md         # Detects changes, proposes schema updates
-│   ├── concept-sync.md             # Keeps docs synchronized
-│   └── contract-validator.md       # Validates consistency
-├── examples/                       # Complete working examples
-│   └── ticketing-system/           # Ticketing app example (run this first!)
-│       ├── schema/                 # Example API contract
-│       ├── concept-model/          # Example domain docs
-│       ├── api/                    # Example types and mock API
-│       └── ui/                     # Example React prototype
-└── docs/                           # Documentation
-    ├── workflow-walkthrough.md     # Step-by-step guide
-    ├── comparison.md               # Schema-First vs Traditional
-    └── writing-skills.md           # How to write contract-maintenance skills
+ux-metrics-app/
+├── ui/                          # React application
+│   ├── src/
+│   │   ├── pages/              # Main application pages
+│   │   │   ├── home.tsx        # Dashboard
+│   │   │   ├── studies.tsx     # Study list
+│   │   │   ├── study-detail.tsx
+│   │   │   ├── session-detail.tsx
+│   │   │   ├── metrics.tsx     # Analytics dashboard
+│   │   │   ├── report.tsx      # Report generator
+│   │   │   ├── people.tsx      # People management
+│   │   │   └── settings.tsx    # App settings
+│   │   ├── components/         # Reusable components
+│   │   ├── services/           # Business logic
+│   │   └── data/               # Seed data
+│   └── package.json
+├── schema/                      # API contract (OpenAPI)
+├── concept-model/               # Domain documentation
+│   ├── domain-model.md         # Entities and business rules
+│   ├── behavior-model.md       # Workflows and interactions
+│   └── entity-relationship-diagram.md
+└── README.md
 ```
-
-**Key Distinction:**
-- **Top-level folders** = Your project (clean placeholders)
-- **examples/** = Working examples to learn from (ticketing system)
-
----
-
-## Core Workflow
-
-### The Contract-First Loop
-
-```
-1. Build Prototype
-      ↓
-2. AI Detects Schema Need
-      ↓
-3. Review & Approve Schema Change
-      ↓
-4. AI Updates Artifacts
-      ↓
-5. Validate Consistency
-      ↓
-   Continue Building
-```
-
-### Skills Reference
-
-| Skill | Purpose | When to Use |
-|-------|---------|-------------|
-| **schema-evolution** | Keeps API schema aligned with prototype | Prototype adds fields, endpoints, or filters |
-| **concept-sync** | Keeps domain/behavior docs synchronized | After schema changes or workflow additions |
-| **contract-validator** | Checks consistency across all artifacts | Before handoff or periodically during development |
-
-### Typical Development Session
-
-```bash
-# 1. Start with validated contract
-/contract-validator "Pre-session validation"
-
-# 2. Build prototype features
-# (Add priority filtering, comments, bulk updates, etc.)
-
-# 3. Update schema as you go
-/schema-evolution "Add priority filtering to tickets"
-
-# 4. Sync concept model
-/concept-sync "Update docs for priority filtering"
-
-# 5. Validate before wrapping up
-/contract-validator "Final validation"
-```
-
----
-
-## Learn More
-
-### Documentation
-
-- **[Workflow Walkthrough](./docs/workflow-walkthrough.md)** - Complete example with iterations
-- **[Comparison: Schema-First vs Traditional](./docs/comparison.md)** - Why this approach works
-- **[Writing Skills Guide](./docs/writing-skills.md)** - How to write contract-maintenance skills
-
-### Example Use Cases
-
-This approach works well for:
-- **Internal tools**: Prototyping admin dashboards, management interfaces
-- **API-driven apps**: When you need clear contracts between frontend and backend teams
-- **Product validation**: Rapid prototyping with built-in documentation
-- **Design systems**: Exploring interaction patterns while maintaining schema
-
-### Adapting to Your Domain
-
-1. **Replace the example**: Delete the ticketing example, start fresh
-2. **Define initial schema**: Create minimal API contract for your domain
-3. **Build prototype**: Use generated types, keep it simple
-4. **Let skills help**: As you add features, schema-evolution keeps contract aligned
-5. **Iterate**: Build → detect → approve → update → validate → repeat
-
----
-
-## Why This Approach?
-
-### Traditional: Prototype → Reverse Engineer
-
-```
-Week 1-2: Build prototype with mock data
-Week 3: Document "what we built"
-Week 4: Developers interpret prototype
-Week 5+: Back-and-forth to clarify intent
-```
-
-### Schema-First: Prototype + Contract Together
-
-```
-Week 1-2: Build prototype (AI maintains schema in parallel)
-Week 3: Handoff complete schema + concept model + working prototype
-Week 4+: Developers implement (clear contract, fewer questions)
-```
-
-**Key Difference:** Contract maintenance happens **during** prototyping, not **after**.
 
 ---
 
 ## Technology Stack
 
-### Prototype UI
-- **React 19** + **TypeScript** + **Vite**
-- **Sailwind Components** - SAIL-like component library
-- **Aurora Color Palette** - Pre-configured design system
-
-### Contract Layer
-- **OpenAPI 3.1** - Industry-standard API schema
-- **TypeScript Types** - Generated from schema
-- **Mock Server** - Simple in-memory API for prototyping
-
-### Skills (AI Automation)
-- **schema-evolution** - Schema change detection and proposal
-- **concept-sync** - Documentation synchronization
-- **contract-validator** - Consistency checking
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Sailwind** - Component library (SAIL-like design)
+- **Recharts** - Data visualization
+- **React Router** - Navigation
+- **LocalStorage** - Client-side data persistence
 
 ---
 
-## Getting Help
+## Data Model
 
-- **Issues**: Report bugs or request features via GitHub Issues
-- **Discussions**: Share your use cases and ask questions
-- **Examples**: See `docs/workflow-walkthrough.md` for detailed examples
+### Core Entities
+
+- **Study** - Collection of sessions for evaluating a product/feature
+- **Session** - Single evaluation event with one participant
+- **Person** - Individual (participant, facilitator, or observer)
+- **AssessmentType** - Structured measurement instrument
+- **AssessmentResponse** - Captured assessment data for a task
+- **Report** - Generated analytics document
+
+See [concept-model/domain-model.md](concept-model/domain-model.md) for complete details.
+
+---
+
+## Metrics Calculation
+
+| Metric | Formula | Aggregation |
+|--------|---------|-------------|
+| Task Success Rate | (successful / total) × 100 | Mean |
+| Time on Task | end_time - start_time | Median |
+| Task Efficiency | (optimal_steps / actual_steps) × 100 | Mean |
+| Error Rate | (errors / opportunities) × 100 | Mean |
+| SEQ | Direct rating (1-7) | Mean |
+
+**Note:** Time on Task uses median aggregation to reduce the impact of outliers.
+
+---
+
+## Development
+
+### Running Locally
+
+```bash
+cd ui
+npm run dev
+```
+
+### Building for Production
+
+```bash
+cd ui
+npm run build
+```
+
+### Linting
+
+```bash
+cd ui
+npm run lint
+```
+
+---
+
+## Documentation
+
+- **[Domain Model](concept-model/domain-model.md)** - Entities, relationships, and business rules
+- **[Behavior Model](concept-model/behavior-model.md)** - Workflows and interaction patterns
+- **[Entity Relationship Diagram](concept-model/entity-relationship-diagram.md)** - Visual data model
+- **[API Contract](schema/api-contract.yaml)** - OpenAPI specification
+
+---
+
+## Roadmap
+
+### Current Version (1.0)
+- ✅ Five assessment types
+- ✅ Analytics dashboard with filtering
+- ✅ Report generation and export
+- ✅ Data backup/restore
+- ✅ Seed data for demonstration
+
+### Planned Enhancements
+- [ ] Multi-study comparison dashboard
+- [ ] Advanced trend analysis
+- [ ] Scheduled report generation
+- [ ] Team/organization support (multi-tenant)
+- [ ] Authentication and authorization
+- [ ] Audit trail for compliance
+- [ ] Additional assessment types
+- [ ] CSV export option
 
 ---
 
 ## Contributing
 
-This template is designed to be adapted to your needs. Key customization points:
-
-1. **Your domain schema**: Replace ticketing example with your entities
-2. **Your UI patterns**: Adapt React components to your design system
-3. **Your workflows**: Extend skills for domain-specific automation
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
 ## License
 
-MIT - Use freely for prototyping and production projects.
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-## Quick Reference
+## Acknowledgments
 
-### Common Commands
+Built with:
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Sailwind](https://github.com/pglevy/sailwind)
+- [Recharts](https://recharts.org/)
 
-```bash
-# Start prototype UI
-cd ui && npm run dev
-
-# Validate contract consistency
-# In Claude Code: /contract-validator
-
-# Update schema after prototype changes
-# In Claude Code: /schema-evolution [description]
-
-# Sync concept model with schema
-# In Claude Code: /concept-sync [what changed]
-```
-
-### Key Files
-
-- 📄 [schema/api-contract.yaml](./schema/api-contract.yaml) - Your API contract
-- 📖 [concept-model/domain-model.md](./concept-model/domain-model.md) - Domain concepts
-- 🔄 [concept-model/behavior-model.md](./concept-model/behavior-model.md) - Workflows
-- 📝 [schema/evolution-log.md](./schema/evolution-log.md) - Change history
+Design inspired by research lab aesthetics with a focus on data clarity and professional presentation.
 
 ---
 
-**Ready to prototype with confidence?** Start with the [workflow walkthrough](./docs/workflow-walkthrough.md) to see the full process in action.
+## Support
+
+For questions, issues, or feature requests, please open an issue on GitHub.

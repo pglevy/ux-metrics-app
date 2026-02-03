@@ -1,8 +1,11 @@
 {
-  "name": "ui",
+  "name": "schema-first-ui",
+  "description": "Schema-First Prototyping UI Template",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "author": "Schema-First Prototyping Contributors",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
