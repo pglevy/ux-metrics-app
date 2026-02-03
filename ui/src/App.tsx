@@ -22,7 +22,7 @@ import Settings from './pages/settings'
  */
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/ux-metrics-app">
       <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <Sidebar />
         <Routes>
