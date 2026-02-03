@@ -6,6 +6,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
 
+**[Live Demo](https://YOUR-USERNAME.github.io/ux-metrics-app/)** | **[Documentation](#documentation)**
+
 ---
 
 ## Overview
