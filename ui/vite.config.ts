@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  // Use base path from env var for GitHub Pages, default to '/' for local dev
-  base: process.env.VITE_BASE_PATH || '/',
+  // GitHub Pages base path
+  base: '/ux-metrics-app/',
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
