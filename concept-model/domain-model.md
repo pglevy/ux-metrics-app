@@ -150,6 +150,58 @@ Captured assessment data for a specific task within a session.
 
 ---
 
+### Report
+A generated document containing aggregated metrics and visualizations for a study.
+
+**Attributes:**
+- **Identity**: Unique identifier (UUID)
+- **Study Reference**: Link to the study being reported on
+- **Study Name**: Study name for display (denormalized)
+- **Generation Timestamp**: When the report was created
+- **Metrics**: Aggregated metrics summary
+- **Session Count**: Number of sessions included
+- **Participant Count**: Number of unique participants
+- **Commentary**: Optional notes or analysis (nullable)
+
+**Business Rules:**
+- Reports are generated on-demand (not stored persistently)
+- Study ID is required
+- Commentary is optional
+- Metrics are calculated at generation time
+- Reports can be exported as JSON for sharing
+- JSON export includes complete data for reproducibility
+
+**Aggregation Methods:**
+- Task Success Rate: Mean (average) across all responses
+- Time on Task: Median (middle value) to reduce outlier impact
+- Task Efficiency: Mean (average) across all responses
+- Error Rate: Mean (average) across all responses
+- SEQ: Mean (average) across all responses
+
+---
+
+### Data Export
+A complete snapshot of all application data in JSON format.
+
+**Attributes:**
+- **Export Timestamp**: When the export was created
+- **Schema Version**: Version identifier for compatibility
+- **Studies**: Array of all study records
+- **Sessions**: Array of all session records
+- **People**: Array of all person records
+- **Assessment Types**: Array of all assessment type records
+- **Assessment Responses**: Array of all assessment response records
+
+**Business Rules:**
+- Export includes all data in the system
+- Export is in JSON format for portability
+- Schema version enables compatibility checking
+- Import replaces all existing data (not merge)
+- Invalid JSON format returns error
+- Data integrity is maintained across import/export
+
+---
+
 ## Relationships
 
 ```
@@ -207,6 +259,17 @@ Question ───────────────────────�
 | Task Efficiency | Ratio of optimal to actual steps | (optimal / actual) × 100 |
 | Error Rate | Percentage of errors during task completion | (errors / opportunities) × 100 |
 | SEQ | Single Ease Question rating | 1-7 scale (1=very difficult, 7=very easy) |
+| Analytics Dashboard | Interactive interface for exploring aggregated metrics | Supports filtering and visualization |
+| Metrics Comparison | Side-by-side analysis of metrics between studies or time periods | Shows differences and percentage changes |
+| Report | Shareable document with aggregated metrics and visualizations | Generated on-demand, exported as JSON |
+| Aggregation | Process of combining multiple data points into summary statistics | Uses mean or median depending on metric |
+| Median | Middle value in a sorted dataset | Used for Time on Task to reduce outlier impact |
+| Mean | Average value across a dataset | Used for most metrics |
+| Filter | Criteria to narrow down data for analysis | Supports participant, task, and date range |
+| Visualization | Graphical representation of metrics | Includes bar charts and line charts |
+| Seed Data | Pre-populated demonstration data | Loaded automatically on first use |
+| Data Export | JSON file containing all application data | Used for backup and sharing |
+| Data Import | Process of restoring data from JSON file | Replaces existing data |
 
 ---
 
@@ -225,9 +288,16 @@ Question ───────────────────────�
 - Person entity supports three roles: participant, facilitator, observer
 - Automatic metric calculations based on assessment type
 
+**2026-01-28**: Analytics and data management entities added
+- Report entity for generated analytics documents
+- Data Export entity for backup/restore functionality
+- Expanded domain vocabulary with analytics terms
+- Documented aggregation methods (median for Time on Task, mean for others)
+
 **Future Considerations:**
 - May need team/organization entities for multi-tenant support
 - May need authentication and authorization
 - May need audit trail/history for compliance
-- May need comparison metrics between studies
+- May need advanced comparison metrics between studies
 - May need tagging/categorization for studies
+- May need scheduled report generation

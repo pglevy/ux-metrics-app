@@ -33,7 +33,11 @@ export default function StudyList() {
     setLoading(true)
     try {
       const allStudies = getAllStudies()
-      setStudies(allStudies)
+      // Sort by creation date (newest first)
+      const sorted = allStudies.sort((a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+      setStudies(sorted)
     } catch (error) {
       console.error('Failed to load studies:', error)
     } finally {
@@ -77,46 +81,43 @@ export default function StudyList() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <div className="container mx-auto px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <HeadingField
-            text="Studies"
-            size="LARGE"
-            headingTag="H1"
-            marginBelow="NONE"
-          />
-          <div className="flex gap-2">
-            <ButtonWidget
-              label="← Back to Home"
-              style="OUTLINE"
-              color="NEUTRAL"
-              onClick={() => navigate('/')}
-            />
-          </div>
-        </div>
+        <header className="mb-8" style={{ animation: 'fadeInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          <h1 className="text-3xl font-semibold" style={{
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.03em'
+          }}>
+            Studies
+          </h1>
+          <p className="text-base mt-2" style={{ color: 'var(--text-secondary)' }}>
+            Manage and organize your usability testing studies
+          </p>
+        </header>
 
         {/* Add Study Button */}
-        <CardLayout padding="MORE" showShadow={true}>
-          <div className="flex items-center justify-between">
-            <HeadingField
-              text="Manage Studies"
-              size="MEDIUM"
-              headingTag="H2"
-              marginBelow="NONE"
-            />
-            <ButtonWidget
-              label="+ Add Study"
-              style="SOLID"
-              color="ACCENT"
-              onClick={() => navigate('/studies/new')}
-            />
-          </div>
-        </CardLayout>
+        <div className="mb-6 card-animate" style={{ animationDelay: '0.1s' }}>
+          <CardLayout padding="MORE" showShadow={true}>
+            <div className="flex items-center justify-between">
+              <HeadingField
+                text="Manage Studies"
+                size="MEDIUM"
+                headingTag="H2"
+                marginBelow="NONE"
+              />
+              <ButtonWidget
+                label="+ Add Study"
+                style="SOLID"
+                color="ACCENT"
+                onClick={() => navigate('/studies/new')}
+              />
+            </div>
+          </CardLayout>
+        </div>
 
         {/* Studies List */}
-        <div className="mt-6 space-y-4">
+        <div className="space-y-4">
           {loading ? (
             <CardLayout padding="MORE" showShadow={true}>
               <RichTextDisplayField value={['Loading studies...']} />
@@ -130,64 +131,125 @@ export default function StudyList() {
               />
             </CardLayout>
           ) : (
-            studies.map((study) => (
-              <CardLayout key={study.id} padding="MORE" showShadow={true}>
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <HeadingField
-                        text={study.name}
-                        size="MEDIUM"
-                        headingTag="H3"
-                        marginBelow="NONE"
-                      />
-                      {getArchivedBadge(study.archived)}
+            <>
+              {/* Active Studies */}
+              {studies.filter(s => !s.archived).map((study, idx) => (
+                <div key={study.id} className="card-animate" style={{ animationDelay: `${0.15 + idx * 0.05}s` }}>
+                  <CardLayout padding="MORE" showShadow={true}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <HeadingField
+                          text={study.name}
+                          size="MEDIUM"
+                          headingTag="H3"
+                          marginBelow="NONE"
+                        />
+                        {getArchivedBadge(study.archived)}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <strong>Product:</strong> {study.productId}
+                        {study.featureId && (
+                          <>
+                            {' | '}
+                            <strong>Feature:</strong> {study.featureId}
+                          </>
+                        )}
+                        {' | '}
+                        <strong>Created:</strong>{' '}
+                        {new Date(study.createdAt).toLocaleDateString()}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      <strong>Product:</strong> {study.productId}
-                      {study.featureId && (
-                        <>
-                          {' | '}
-                          <strong>Feature:</strong> {study.featureId}
-                        </>
-                      )}
-                      {' | '}
-                      <strong>Created:</strong>{' '}
-                      {new Date(study.createdAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <ButtonWidget
-                      label="View"
-                      style="SOLID"
-                      color="ACCENT"
-                      onClick={() => navigate(`/studies/${study.id}`)}
-                    />
-                    <ButtonWidget
-                      label="Edit"
-                      style="OUTLINE"
-                      color="NEUTRAL"
-                      onClick={() => navigate(`/studies/${study.id}/edit`)}
-                    />
-                    {study.archived ? (
+                    <div className="flex gap-2">
                       <ButtonWidget
-                        label="Unarchive"
+                        label="View"
+                        style="SOLID"
+                        color="ACCENT"
+                        onClick={() => navigate(`/studies/${study.id}`)}
+                      />
+                      <ButtonWidget
+                        label="Edit"
                         style="OUTLINE"
                         color="NEUTRAL"
-                        onClick={() => handleUnarchive(study.id)}
+                        onClick={() => navigate(`/studies/${study.id}/edit`)}
                       />
-                    ) : (
                       <ButtonWidget
                         label="Archive"
                         style="OUTLINE"
                         color="NEGATIVE"
                         onClick={() => handleArchive(study.id)}
                       />
-                    )}
+                    </div>
                   </div>
+                </CardLayout>
                 </div>
-              </CardLayout>
-            ))
+              ))}
+
+              {/* Archived Studies Section */}
+              {studies.filter(s => s.archived).length > 0 && (
+                <>
+                  <div className="mt-12 mb-6">
+                    <h2 className="text-xl font-semibold" style={{
+                      color: 'var(--text-secondary)',
+                      letterSpacing: '-0.02em'
+                    }}>
+                      Archived
+                    </h2>
+                  </div>
+                  {studies.filter(s => s.archived).map((study, idx) => (
+                    <div key={study.id} className="card-animate" style={{ animationDelay: `${0.15 + idx * 0.05}s` }}>
+                      <CardLayout padding="MORE" showShadow={true}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <HeadingField
+                              text={study.name}
+                              size="MEDIUM"
+                              headingTag="H3"
+                              marginBelow="NONE"
+                            />
+                            {getArchivedBadge(study.archived)}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            <strong>Product:</strong> {study.productId}
+                            {study.featureId && (
+                              <>
+                                {' | '}
+                                <strong>Feature:</strong> {study.featureId}
+                              </>
+                            )}
+                            {' | '}
+                            <strong>Created:</strong>{' '}
+                            {new Date(study.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <ButtonWidget
+                            label="View"
+                            style="SOLID"
+                            color="ACCENT"
+                            onClick={() => navigate(`/studies/${study.id}`)}
+                          />
+                          <ButtonWidget
+                            label="Edit"
+                            style="OUTLINE"
+                            color="NEUTRAL"
+                            onClick={() => navigate(`/studies/${study.id}/edit`)}
+                          />
+                          <ButtonWidget
+                            label="Unarchive"
+                            style="OUTLINE"
+                            color="NEUTRAL"
+                            onClick={() => handleUnarchive(study.id)}
+                          />
+                        </div>
+                      </div>
+                    </CardLayout>
+                    </div>
+                  ))}
+                </>
+              )}
+            </>
           )}
         </div>
       </div>

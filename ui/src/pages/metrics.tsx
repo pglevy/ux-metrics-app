@@ -12,8 +12,9 @@ import type { Study, Person, AggregatedMetrics } from '../../../api/types'
 import { getAllStudies, getStudyById } from '../services/studyService'
 import { getByRole } from '../services/personService'
 import { getStudyMetrics, formatMetricsForDisplay, getUniqueTaskDescriptions, type AnalyticsFilters } from '../services/analyticsService'
-import SuccessRateChart from '../components/charts/SuccessRateChart'
-import TimeOnTaskChart from '../components/charts/TimeOnTaskChart'
+import SuccessRateChart from '../components/charts/SuccessRateChart.tsx'
+import TimeOnTaskChart from '../components/charts/TimeOnTaskChart.tsx'
+import MetricCard from '../components/MetricCard'
 
 /**
  * Metrics Dashboard Page
@@ -45,6 +46,7 @@ export default function MetricsDashboard() {
   const [selectedTask, setSelectedTask] = useState<string>('')
   const [dateFrom, setDateFrom] = useState<string>('')
   const [dateTo, setDateTo] = useState<string>('')
+  const [filtersExpanded, setFiltersExpanded] = useState(true)
 
   // Load studies on mount
   useEffect(() => {
@@ -145,7 +147,7 @@ export default function MetricsDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-blue-50">
+      <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="container mx-auto px-8 py-8">
           <CardLayout padding="MORE" showShadow={true}>
             <RichTextDisplayField value={['Loading...']} />
@@ -156,70 +158,100 @@ export default function MetricsDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <div className="container mx-auto px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <HeadingField
-            text="Metrics Dashboard"
-            size="LARGE"
-            headingTag="H1"
-            marginBelow="NONE"
-          />
-          <div className="flex gap-2">
-            <ButtonWidget
-              label="Generate Report"
-              style="SOLID"
-              color="ACCENT"
-              onClick={() => navigate(`/reports${selectedStudyId ? `?studyId=${selectedStudyId}` : ''}`)}
-            />
-            <ButtonWidget
-              label="← Back to Home"
-              style="OUTLINE"
-              color="NEUTRAL"
-              onClick={() => navigate('/')}
-            />
+        <header className="mb-8" style={{ animation: 'fadeInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          <div className="flex items-start justify-between gap-6">
+            <div className="flex-1">
+              <h1 className="text-3xl font-semibold mb-2" style={{
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.03em'
+              }}>
+                Metrics Dashboard
+              </h1>
+              <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
+                Analyze aggregated usability testing metrics and trends
+              </p>
+            </div>
+            <div className="flex gap-3 items-start">
+              {/* Study Selector */}
+              {studies.length > 0 && (
+                <div style={{ minWidth: '300px' }}>
+                  <DropdownField
+                    key={`study-dropdown-${studies.length}`}
+                    label="Study"
+                    labelPosition="ABOVE"
+                    choiceLabels={['Select a study...', ...studies.map(s => s.name)]}
+                    choiceValues={['', ...studies.map(s => s.id)]}
+                    value={selectedStudyId}
+                    onChange={handleStudyChange}
+                    marginBelow="NONE"
+                  />
+                </div>
+              )}
+              <div style={{ marginTop: '30px' }}>
+                <ButtonWidget
+                  label="Generate Report"
+                  style="SOLID"
+                  color="ACCENT"
+                  onClick={() => navigate(`/reports${selectedStudyId ? `?studyId=${selectedStudyId}` : ''}`)}
+                  className="mb-0"
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        </header>
 
-        {/* Study Selector */}
-        <CardLayout padding="MORE" showShadow={true}>
-          <HeadingField
-            text="Select Study"
-            size="MEDIUM"
-            headingTag="H2"
-            marginBelow="STANDARD"
-          />
-          {studies.length === 0 ? (
+        {/* No studies message */}
+        {studies.length === 0 && (
+          <CardLayout padding="MORE" showShadow={true}>
             <RichTextDisplayField
               value={['No studies available. Create a study first to view metrics.']}
             />
-          ) : (
-            <div className="max-w-md">
-              <DropdownField
-                key={`study-dropdown-${studies.length}`}
-                label="Study"
-                labelPosition="ABOVE"
-                choiceLabels={['Select a study...', ...studies.map(s => s.name)]}
-                choiceValues={['', ...studies.map(s => s.id)]}
-                value={selectedStudyId}
-                onChange={handleStudyChange}
-              />
-            </div>
-          )}
-        </CardLayout>
+          </CardLayout>
+        )}
 
         {/* Filter Controls */}
         {selectedStudyId && (
-          <div className="mt-6">
+          <div className="mb-6">
             <CardLayout padding="MORE" showShadow={true}>
-              <div className="flex items-center justify-between mb-4">
-                <HeadingField
-                  text="Filters"
-                  size="MEDIUM"
-                  headingTag="H2"
-                  marginBelow="NONE"
-                />
+              <div className="flex items-center justify-between mb-0">
+                <button
+                  onClick={() => setFiltersExpanded(!filtersExpanded)}
+                  className="flex items-center gap-2"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: 0
+                  }}
+                >
+                  <HeadingField
+                    text="Filters"
+                    size="MEDIUM"
+                    headingTag="H2"
+                    marginBelow="NONE"
+                  />
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    style={{
+                      transform: filtersExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform var(--transition-base)'
+                    }}
+                  >
+                    <path
+                      d="M5 7.5L10 12.5L15 7.5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
                 {hasActiveFilters && (
                   <ButtonWidget
                     label="Clear Filters"
@@ -229,50 +261,52 @@ export default function MetricsDashboard() {
                   />
                 )}
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Participant Filter */}
-                <DropdownField
-                  label="Participant"
-                  labelPosition="ABOVE"
-                  choiceLabels={participantOptions.map(o => o.label)}
-                  choiceValues={participantOptions.map(o => o.id)}
-                  value={selectedParticipantId}
-                  onChange={(value) => {
-                    setSelectedParticipantId(value)
-                  }}
-                />
-                
-                {/* Task Filter */}
-                <DropdownField
-                  label="Task"
-                  labelPosition="ABOVE"
-                  choiceLabels={taskOptions.map(o => o.label)}
-                  choiceValues={taskOptions.map(o => o.id)}
-                  value={selectedTask}
-                  onChange={(value) => {
-                    setSelectedTask(value)
-                  }}
-                />
-                
-                {/* Date From */}
-                <TextField
-                  label="Date From"
-                  labelPosition="ABOVE"
-                  placeholder="YYYY-MM-DD"
-                  value={dateFrom}
-                  onChange={(value) => setDateFrom(value)}
-                />
-                
-                {/* Date To */}
-                <TextField
-                  label="Date To"
-                  labelPosition="ABOVE"
-                  placeholder="YYYY-MM-DD"
-                  value={dateTo}
-                  onChange={(value) => setDateTo(value)}
-                />
-              </div>
+
+              {filtersExpanded && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Participant Filter */}
+                  <DropdownField
+                    label="Participant"
+                    labelPosition="ABOVE"
+                    choiceLabels={participantOptions.map(o => o.label)}
+                    choiceValues={participantOptions.map(o => o.id)}
+                    value={selectedParticipantId}
+                    onChange={(value) => {
+                      setSelectedParticipantId(value)
+                    }}
+                  />
+
+                  {/* Task Filter */}
+                  <DropdownField
+                    label="Task"
+                    labelPosition="ABOVE"
+                    choiceLabels={taskOptions.map(o => o.label)}
+                    choiceValues={taskOptions.map(o => o.id)}
+                    value={selectedTask}
+                    onChange={(value) => {
+                      setSelectedTask(value)
+                    }}
+                  />
+
+                  {/* Date From */}
+                  <TextField
+                    label="Date From"
+                    labelPosition="ABOVE"
+                    placeholder="YYYY-MM-DD"
+                    value={dateFrom}
+                    onChange={(value) => setDateFrom(value)}
+                  />
+
+                  {/* Date To */}
+                  <TextField
+                    label="Date To"
+                    labelPosition="ABOVE"
+                    placeholder="YYYY-MM-DD"
+                    value={dateTo}
+                    onChange={(value) => setDateTo(value)}
+                  />
+                </div>
+              )}
             </CardLayout>
           </div>
         )}
@@ -288,115 +322,66 @@ export default function MetricsDashboard() {
               </CardLayout>
             ) : (
               <>
-                {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                  {/* Session & Participant Count */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Overview"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Sessions:</span>
-                        <span className="font-semibold">{metrics.sessionCount}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Participants:</span>
-                        <span className="font-semibold">{metrics.participantCount}</span>
-                      </div>
-                      {metrics.dateRange.start && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Date Range:</span>
-                          <span className="font-semibold text-sm">
-                            {new Date(metrics.dateRange.start).toLocaleDateString()} - {new Date(metrics.dateRange.end).toLocaleDateString()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </CardLayout>
+                {/* Primary Metrics */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+                  <MetricCard
+                    label="Task Success Rate"
+                    value={formattedMetrics?.taskSuccessRate || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.taskSuccessRate?.count || 0} sessions`}
+                    icon={
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    }
+                    variant="success"
+                    size="large"
+                  />
 
-                  {/* Task Success Rate */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Task Success Rate"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-green-600">
-                      {formattedMetrics?.taskSuccessRate}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.taskSuccessRate?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Time on Task (Median)"
+                    value={formattedMetrics?.timeOnTask || 'N/A'}
+                    subtitle={`Median across ${metrics.metrics.timeOnTask?.count || 0} sessions`}
+                    icon={
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    }
+                    variant="primary"
+                    size="large"
+                  />
+                </div>
 
-                  {/* Time on Task */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Time on Task (Median)"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-blue-600">
-                      {formattedMetrics?.timeOnTask}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.timeOnTask?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                {/* Secondary Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
 
-                  {/* Task Efficiency */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Task Efficiency"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-purple-600">
-                      {formattedMetrics?.taskEfficiency}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.taskEfficiency?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Sessions"
+                    value={metrics.sessionCount}
+                    subtitle={`${metrics.participantCount} participants`}
+                    variant="neutral"
+                  />
 
-                  {/* Error Rate */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="Error Rate"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-red-600">
-                      {formattedMetrics?.errorRate}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.errorRate?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Task Efficiency"
+                    value={formattedMetrics?.taskEfficiency || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.taskEfficiency?.count || 0} sessions`}
+                    variant="info"
+                  />
 
-                  {/* SEQ Score */}
-                  <CardLayout padding="MORE" showShadow={true}>
-                    <HeadingField
-                      text="SEQ Score"
-                      size="SMALL"
-                      headingTag="H3"
-                      marginBelow="STANDARD"
-                    />
-                    <div className="text-3xl font-bold text-orange-600">
-                      {formattedMetrics?.seq}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {metrics.metrics.seq?.count || 0} measurements
-                    </div>
-                  </CardLayout>
+                  <MetricCard
+                    label="Error Rate"
+                    value={formattedMetrics?.errorRate || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.errorRate?.count || 0} sessions`}
+                    variant="warning"
+                  />
+
+                  <MetricCard
+                    label="SEQ Score"
+                    value={formattedMetrics?.seq || 'N/A'}
+                    subtitle={`Mean across ${metrics.metrics.seq?.count || 0} sessions`}
+                    variant="purple"
+                  />
                 </div>
 
                 {/* Charts */}

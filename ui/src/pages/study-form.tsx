@@ -7,7 +7,7 @@ import {
   ButtonWidget,
   MessageBanner,
 } from '@pglevy/sailwind'
-import { createStudy, getStudyById, updateStudy } from '../services/studyService'
+import { createStudy, getStudyById, updateStudy, deleteStudy } from '../services/studyService'
 
 /**
  * Study Form Page
@@ -150,9 +150,34 @@ export default function StudyForm() {
     navigate('/studies')
   }
 
+  // Handle delete
+  const handleDelete = () => {
+    if (!id) return
+
+    const confirmDelete = window.confirm(
+      'Are you sure you want to permanently delete this study? This action cannot be undone.\n\nNote: Consider archiving instead to preserve data.'
+    )
+
+    if (!confirmDelete) return
+
+    try {
+      const result = deleteStudy(id)
+      if (!result.success) {
+        setError(result.error || 'Failed to delete study.')
+        return
+      }
+
+      // Navigate back to studies list on success
+      navigate('/studies')
+    } catch (err) {
+      console.error('Failed to delete study:', err)
+      setError('An unexpected error occurred while deleting.')
+    }
+  }
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-blue-50">
+      <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="container mx-auto px-8 py-8">
           <CardLayout padding="MORE" showShadow={true}>
             <p>Loading...</p>
@@ -163,7 +188,7 @@ export default function StudyForm() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="with-sidebar min-h-screen page-animate" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <div className="container mx-auto px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -241,19 +266,32 @@ export default function StudyForm() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 justify-end">
-              <ButtonWidget
-                label={isEditMode ? 'Save Changes' : 'Create Study'}
-                style="SOLID"
-                color="ACCENT"
-                submit={true}
-              />
-              <ButtonWidget
-                label="Cancel"
-                style="OUTLINE"
-                color="NEUTRAL"
-                onClick={handleCancel}
-              />
+            <div className="flex gap-2 justify-between">
+              {/* Delete Button (Edit Mode Only) */}
+              {isEditMode && (
+                <ButtonWidget
+                  label="Delete Study"
+                  style="OUTLINE"
+                  color="NEGATIVE"
+                  onClick={handleDelete}
+                />
+              )}
+
+              {/* Right-aligned buttons */}
+              <div className="flex gap-2 ml-auto">
+                <ButtonWidget
+                  label={isEditMode ? 'Save Changes' : 'Create Study'}
+                  style="SOLID"
+                  color="ACCENT"
+                  submit={true}
+                />
+                <ButtonWidget
+                  label="Cancel"
+                  style="OUTLINE"
+                  color="NEUTRAL"
+                  onClick={handleCancel}
+                />
+              </div>
             </div>
           </form>
         </CardLayout>
